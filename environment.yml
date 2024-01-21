@@ -1,4 +1,4 @@
-name: python-tspart
+name: tspart
 channels:
   - defaults
 dependencies:
