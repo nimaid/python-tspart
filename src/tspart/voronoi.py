@@ -161,6 +161,8 @@ def weighted_centroid(V, D):
     return ((P * D)).sum(axis=0) / D.sum()
 
 
+# http://stackoverflow.com/questions/28665491/...
+#    ...getting-a-bounded-polygon-coordinates-from-voronoi-cells
 def in_box(points, bbox):
     return np.logical_and(
         np.logical_and(bbox[0] <= points[:, 0], points[:, 0] <= bbox[1]),
@@ -168,6 +170,10 @@ def in_box(points, bbox):
 
 
 def voronoi(points, bbox):
+    # See http://stackoverflow.com/questions/28665491/...
+    #   ...getting-a-bounded-polygon-coordinates-from-voronoi-cells
+    # See also https://gist.github.com/pv/8036995
+
     # Select points inside the bounding box
     i = in_box(points, bbox)
 
