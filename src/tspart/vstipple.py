@@ -1,8 +1,7 @@
-import tqdm
+import numpy as np
 import scipy.misc
 import scipy.ndimage
-import numpy as np
-import imageio
+from etatime import EtaBar
 
 from tspart import voronoi
 
@@ -45,20 +44,13 @@ def initialization(n, D):
 
 
 def stipple(
-        filename,
-        n_point: 5000,
-        n_iter: 50,
-        threshold: 255
+        greyscale_array,
+        points=5000,
+        iterations=50
 ):
-    density = imageio.v2.imread(filename, as_gray=True, pilmode='L')
-
     # We want (approximately) 500 pixels per voronoi region
-    zoom = (n_point * 500) / (density.shape[0] * density.shape[1])
-    zoom = int(round(np.sqrt(zoom)))
-    density = scipy.ndimage.zoom(density, zoom, order=0)
-    # Apply threshold onto image
-    # Any color > threshold will be white
-    density = np.minimum(density, threshold)
+    zoom = round((points * 500) / (greyscale_array.shape[0] * greyscale_array.shape[1]))
+    density = scipy.ndimage.zoom(greyscale_array, zoom, order=0)
 
     density = 1.0 - normalize(density)
     density = density[::-1, :]
@@ -66,9 +58,9 @@ def stipple(
     density_Q = density_P.cumsum(axis=1)
 
     # Initialization
-    points = initialization(n_point, density)
+    points = initialization(points, density)
 
-    for i in tqdm.trange(n_iter):
+    for i in EtaBar(range(iterations)):
         regions, points = voronoi.centroids(points, density, density_P, density_Q)
 
-    return points
+    return points / zoom
