@@ -1,9 +1,19 @@
-# <img src="src/tspart/resources/icon.png" height="20px" alt=""/> TSP Art
-### Python TSP Art Module for Python.
+<div align="center">
+    <p><b>TSP Art</b></p>
+    <p>TSP Art Module for Python</p>
+    <a href="https://pypi.org/project/tspart/"><img src="https://img.shields.io/pypi/pyversions/tspart?logo=python&logoColor=white" alt="Python Version" /></a>
+    <a href="https://pypi.org/project/tspart/"><img src="https://img.shields.io/pypi/v/tspart?logo=PyPI&logoColor=white" alt="PyPI Version" /></a>
+    <br>
+    <a href="https://github.com/nimaid/tspart/actions/workflows/master.yml"><img src="https://img.shields.io/github/actions/workflow/status/nimaid/tspart/master.yml?logo=GitHub" alt="GitHub Build" /></a>
+    <a href="https://codecov.io/gh/nimaid/tspart"><img src="https://img.shields.io/codecov/c/github/nimaid/tspart?logo=codecov&logoColor=white" alt="Codecov Coverage" /></a>
+    Codacy Badge
+    <br>
+    <a href="https://github.com/nimaid/tspart/raw/main/LICENSE"><img src="https://img.shields.io/pypi/l/tspart?logo=opensourceinitiative&logoColor=white" alt="License" /></a>
+    <a href="https://pypi.org/project/tspart/"><img src="https://img.shields.io/pypi/dm/tspart.svg?label=pypi%20downloads&logo=PyPI&logoColor=white" alt="PyPI Downloads" /></a>
+    <a href="https://paypal.me/EllaJameson"><img src="https://img.shields.io/badge/PayPal-donate?logo=paypal&logoColor=white&label=donate&color=purple" alt="Donate" /></a>
+</div>
 
 <p align="center"><img src="docs/example.jpg" width="800px" alt="Example image"/></p>
-
-<p align="center"><a href="https://pypi.org/project/tspart/"><img src="https://pypi.org/static/images/logo-large.9f732b5f.svg" width="200px" alt="tspart on Pypi"></a></p>
 
 ## Command Line Usage
 ```

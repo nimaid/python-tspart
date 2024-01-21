@@ -1,20 +1,18 @@
-[build-system]
+ [build-system]
 requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
 name = "tspart"
 dynamic = ["version", "description"]
-readme = "README_pypi.md"
+readme = "README.md"
 license= {file = "LICENSE"}
 authors = [
     {name = "Ella Jameson", email = "ellagjameson@gmail.com"}
 ]
 
 classifiers = []
-dependencies = [
-    "pyyaml"
-]
+dependencies = []
 
 [project.urls]
 homepage = "https://github.com/nimaid/python-tspart"
