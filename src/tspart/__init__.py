@@ -6,3 +6,4 @@ from tspart.main import run
 from tspart.vstipple import stipple
 
 from tspart.files import open_image_to_bw_array
+import tspart.tsp

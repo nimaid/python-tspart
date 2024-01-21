@@ -10,3 +10,4 @@ dependencies:
       - etatime
       - imageio>=3
       - Pillow
+      - ortools
