@@ -12,7 +12,10 @@ authors = [
 ]
 
 classifiers = []
-dependencies = []
+dependencies = [
+    "scipy",
+    "numpy"
+]
 
 [project.urls]
 homepage = "https://github.com/nimaid/python-tspart"

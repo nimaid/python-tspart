@@ -2,7 +2,11 @@ name: tspart
 channels:
   - defaults
 dependencies:
-  - python=3.10*
+  - python>=3.10
   - pip
   - pip:
-    -
+      - scipy
+      - numpy
+      - etatime
+      - imageio>=3
+      - Pillow
