@@ -1,9 +1,7 @@
 import argparse
 import sys
 
-from . import helpers
-from .constants import OpCode, DESCRIPTION, DEFAULTS
-from .calculator import Calculator
+from tspart.constants import DESCRIPTION
 
 
 # Parse arguments
@@ -15,6 +13,7 @@ def parse_args(args):
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
 
+    '''
     parser.add_argument("-1", "--first", dest="first_arg", type=float, required=True,
                         help="the first argument"
                         )
@@ -29,15 +28,18 @@ def parse_args(args):
                             values=", ".join([x.value for x in OpCode]),
                         default=DEFAULTS["opcode"].value)
                         )
+    '''
 
     parsed_args = parser.parse_args(args)
 
+    '''
     # Interpret string arguments
     if parsed_args.opcode is not None:
         if parsed_args.opcode in [x.value for x in OpCode]:
             parsed_args.opcode = OpCode(parsed_args.opcode)
         else:
             parser.error(f"\"{parsed_args.opcode}\" is not a valid opcode")
+    '''
 
     return parsed_args
 
@@ -45,17 +47,7 @@ def parse_args(args):
 def main(args):
     parsed_args = parse_args(args)
 
-    calc = Calculator(
-        first=parsed_args.first_arg,
-        second=parsed_args.second_arg,
-        opcode=parsed_args.opcode)
-
-    result = calc.operate()
-
-    print("{eq} = {val}".format(
-        eq=result["equation"],
-        val=result["value"])
-    )
+    
 
 
 def run():

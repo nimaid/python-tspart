@@ -1,2 +1,1 @@
-from .enums import PlatformCode, OpCode
-from .defaults import DEFAULTS
+from tspart.constants.modinfo import DESCRIPTION, VERSION

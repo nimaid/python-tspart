@@ -1,5 +1,5 @@
-"""Python TSP Art Module"""
+"""TSP Art Module for Python"""
 
 __version__ = "0.1.0"
 
-from .core import run
+from .main import run
