@@ -1,6 +1,6 @@
 @echo off
 
-set ENVNAME={[module_name]}
+set ENVNAME=tspart
 set BUILDENVNAME=build
 
 set ORIGDIR=%CD%

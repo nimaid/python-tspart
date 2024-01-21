@@ -16,13 +16,13 @@ sys.path.insert(
     src_path
 )
 
-project = '{[simple_name]} ({[module_name]})'
-copyright = '2023, {[author]}'
-author = '{[author]}'
+project = 'TSP Art (tspart)'
+copyright = '2023, Ella Jameson'
+author = 'Ella Jameson'
 
 version = None
 version_prefix = "__version__ = "
-with open(os.path.join(src_path, "{[module_name]}", "__init__.py")) as f:
+with open(os.path.join(src_path, "tspart", "__init__.py")) as f:
     for line in f.readlines():
         line = line.strip("\n").strip("\r").strip()
 

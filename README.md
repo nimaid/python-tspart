@@ -1,13 +1,13 @@
-# <img src="src/{[module_name]}/resources/icon.png" height="20px" alt=""/> {[simple_name]}
-### {[description]} for Python.
+# <img src="src/tspart/resources/icon.png" height="20px" alt=""/> TSP Art
+### Python TSP Art Module for Python.
 
 <p align="center"><img src="docs/example.jpg" width="800px" alt="Example image"/></p>
 
-<p align="center"><a href="https://pypi.org/project/{[module_name]}/"><img src="https://pypi.org/static/images/logo-large.9f732b5f.svg" width="200px" alt="{[module_name]} on Pypi"></a></p>
+<p align="center"><a href="https://pypi.org/project/tspart/"><img src="https://pypi.org/static/images/logo-large.9f732b5f.svg" width="200px" alt="tspart on Pypi"></a></p>
 
 ## Command Line Usage
 ```
-usage: {[module_name]} [-h] -1 FIRST_ARG [-2 SECOND_ARG] [-o OPCODE]
+usage: tspart [-h] -1 FIRST_ARG [-2 SECOND_ARG] [-o OPCODE]
 
 A python 3 module.
 
@@ -28,4 +28,4 @@ options:
 TODO
 
 # Full Documentation
-<p align="center"><a href="https://{[module_name]}.readthedocs.io/en/latest/index.html"><img src="https://brand-guidelines.readthedocs.org/_images/logo-wordmark-vertical-dark.png" width="300px" alt="{[module_name]} on Read the Docs"></a></p>
+<p align="center"><a href="https://tspart.readthedocs.io/en/latest/index.html"><img src="https://brand-guidelines.readthedocs.org/_images/logo-wordmark-vertical-dark.png" width="300px" alt="tspart on Read the Docs"></a></p>

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-from src import {[module_name]}
+from src import tspart
 
 if __name__ == "__main__":
-    {[module_name]}.run()
+    tspart.run()

@@ -1,8 +1,8 @@
 @echo off
 
-set MAINFAILENAME={[module_name]}
+set MAINFAILENAME=tspart
 set ENVNAME=%MAINFAILENAME%
-set MODULENAME={[module_name]}
+set MODULENAME=tspart
 
 set ORIGDIR=%CD%
 set SOURCEDIR=%ORIGDIR%\src\%MODULENAME%

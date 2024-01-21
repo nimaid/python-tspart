@@ -1,2 +1,0 @@
-include src/{[module_name]}/*.yml src/{[module_name]}/*.py
-graft src/{[module_name]}/resources

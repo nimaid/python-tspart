@@ -1,7 +1,0 @@
-Version: {[version]}
-CompanyName: "{[author]} ({[author_username]})"
-FileDescription: "{[description]}"
-InternalName: "{[simple_name]}"
-LegalCopyright: "{[author]} ({[author_username]})"
-OriginalFilename: "{[name]}.exe"
-ProductName: "{[simple_name]}"

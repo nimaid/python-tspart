@@ -1,5 +1,0 @@
-"""{[description]}"""
-
-__version__ = "{[version]}"
-
-from .core import run

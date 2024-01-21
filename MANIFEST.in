@@ -1,0 +1,2 @@
+include src/tspart/*.yml src/tspart/*.py
+graft src/tspart/resources
