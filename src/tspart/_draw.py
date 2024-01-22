@@ -1,13 +1,9 @@
 from typing import Tuple, Any
 
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageChops
 
 from tspart._helpers import get_bounding_corners
-
-
-def map_route_points(points, route):
-    return np.array([points[idx] for idx in route])
 
 
 def draw_points(
@@ -36,8 +32,8 @@ def draw_points(
 
         draw.ellipse(
             xy=(
-                (round(point[0]-radius), round(point[1]-radius)),
-                (round(point[0]+radius), round(point[1]+radius))
+                (round(point[0] - radius), round(point[1] - radius)),
+                (round(point[0] + radius), round(point[1] + radius))
             ),
             fill=foreground,
             outline=None
@@ -50,13 +46,10 @@ def draw_points(
 
 def draw_route(
         points,
-        route,
         size=None,
         background=(255, 255, 255),
         foreground=(0, 0, 0),
         line_width=2,
-        draw_dot=False,
-        dot_radius=2,
         subpixels=8
 ):
     if size is None:
@@ -70,27 +63,24 @@ def draw_route(
     size = tuple(size.round().astype(int))
 
     line_width = int(round(line_width * subpixels))
-    dot_radius = int(round(dot_radius * subpixels))
+    dot_radius = int(round(line_width / 2 * subpixels))
 
     img = Image.new(mode="RGB", size=size_scale, color=background)
     draw = ImageDraw.Draw(img)
 
-    route_points = map_route_points(points, route)
-
     last_point = None
-    for point in route_points:
+    for point in points:
         point = tuple((point * subpixels).round().astype(int))
 
         # Draw dot
-        if draw_dot:
-            draw.ellipse(
-                xy=(
-                    (round(point[0]-dot_radius), round(point[1]-dot_radius)),
-                    (round(point[0]+dot_radius), round(point[1]+dot_radius))
-                ),
-                fill=foreground,
-                outline=None
-            )
+        draw.ellipse(
+            xy=(
+                (round(point[0] - dot_radius), round(point[1] - dot_radius)),
+                (round(point[0] + dot_radius), round(point[1] + dot_radius))
+            ),
+            fill=foreground,
+            outline=None
+        )
 
         # Draw line
         if last_point is not None:
@@ -103,5 +93,40 @@ def draw_route(
         last_point = point
 
     img = img.resize(size)
+
+    return img
+
+
+def draw_cmyk_routes(
+        cmyk_points,
+        size=None,
+        line_width=2,
+        subpixels=8
+):
+    if size is None:
+        size = tuple(get_bounding_corners(cmyk_points[0])[1] + 1)
+    else:
+        size = tuple(size)
+
+    sub_colors = (
+        (255, 0, 0),
+        (0, 255, 0),
+        (0, 0, 255),
+        (255, 255, 255)
+    )
+
+    img = Image.new(size=size[::-1], mode="RGB", color=(255, 255, 255))
+    for idx, channel_points in enumerate(cmyk_points):
+        channel_img = draw_route(
+            points=channel_points,
+            size=size,
+            background=(0, 0, 0),
+            foreground=sub_colors[idx],
+            line_width=line_width,
+            draw_dot=False,
+            subpixels=subpixels
+        ).convert("RGB")
+
+        img = ImageChops.subtract(img, channel_img)
 
     return img
