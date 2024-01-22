@@ -16,3 +16,7 @@ def image_to_array(image, mode):
 
 def map_points_to_route(points, route):
     return np.array([points[idx] for idx in route])
+
+
+def ndarray_to_array_2d(array):
+    return [list([list(__) for __ in _]) for _ in array]

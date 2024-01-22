@@ -1,5 +1,3 @@
-from typing import Tuple, Any
-
 import numpy as np
 from PIL import Image, ImageDraw, ImageChops
 
@@ -15,7 +13,7 @@ def draw_points(
         subpixels=8
 ):
     if size is None:
-        size = (get_bounding_corners(points)[1] + 1)
+        size = (np.array(get_bounding_corners(points)[1]) + 1)
     else:
         size = np.array(size[::-1])
 
@@ -30,6 +28,8 @@ def draw_points(
     draw = ImageDraw.Draw(img)
 
     for point in points:
+        point = np.array(point)
+
         point = tuple((point * subpixels).round().astype(int))
 
         draw.ellipse(
@@ -55,7 +55,7 @@ def draw_route(
         subpixels=8
 ):
     if size is None:
-        size = (get_bounding_corners(points)[1] + 1)
+        size = (np.array(get_bounding_corners(points)[1]) + 1)
     else:
         size = np.array(size[::-1])
 
@@ -65,13 +65,14 @@ def draw_route(
     size = tuple(size.round().astype(int))
 
     line_width = int(round(line_width * subpixels))
-    dot_radius = int(round(line_width / 2 * subpixels))
+    dot_radius = int(round(line_width / 2))
 
     img = Image.new(mode="RGB", size=size_scale, color=background)
     draw = ImageDraw.Draw(img)
 
     last_point = None
     for point in points:
+        point = np.array(point)
         point = tuple((point * subpixels).round().astype(int))
 
         # Draw dot
@@ -106,7 +107,7 @@ def draw_cmyk_routes(
         subpixels=8
 ):
     if size is None:
-        size = tuple(get_bounding_corners(cmyk_points[0])[1] + 1)
+        size = tuple(np.array(get_bounding_corners(cmyk_points[0])[1]) + 1)
     else:
         size = tuple(size)
 
