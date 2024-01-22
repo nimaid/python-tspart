@@ -39,16 +39,14 @@ def solve(points, closed=False, log=True, verbose=False):
 
     solution = routing.SolveWithParameters(search_parameters)
 
-    routes = []
-    for route_nbr in range(routing.vehicles()):
-        index = routing.Start(route_nbr)
+    if solution:
+        index = routing.Start(0)
         route = [manager.IndexToNode(index)]
+
         while not routing.IsEnd(index):
             index = solution.Value(routing.NextVar(index))
             route.append(manager.IndexToNode(index))
-        routes.append(route)
 
-    if len(routes) > 0:
-        return routes[0]
+        return route
     else:
         return None
