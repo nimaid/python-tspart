@@ -4,8 +4,9 @@ import numpy as np
 import scipy.spatial
 from ortools.constraint_solver import pywrapcp, routing_enums_pb2
 
+
 # See https://developers.google.com/optimization/routing/tsp
-def solve(points, closed=False, solution_limit=None, time_limit_minutes=1, log=True, verbose=False):
+def solve(points, closed=False, solution_limit=None, time_limit_minutes=1, logging=True, verbose=False):
     distance_matrix = scipy.spatial.distance.cdist(points, points).round().astype(int)
     num_points = len(points)
 
@@ -16,7 +17,7 @@ def solve(points, closed=False, solution_limit=None, time_limit_minutes=1, log=T
         manager = pywrapcp.RoutingIndexManager(num_points, 1, [0], [end])
 
     routing_parameters = pywrapcp.DefaultRoutingModelParameters()
-    if log and verbose:
+    if logging and verbose:
         routing_parameters.solver_parameters.trace_propagation = True
         routing_parameters.solver_parameters.trace_search = True
 
@@ -40,9 +41,9 @@ def solve(points, closed=False, solution_limit=None, time_limit_minutes=1, log=T
     if solution_limit:
         search_parameters.solution_limit = solution_limit
     if time_limit_minutes:
-        search_parameters.time_limit.seconds = time_limit_minutes * 60
+        search_parameters.time_limit.seconds = int(round(time_limit_minutes * 60))
 
-    if log:
+    if logging:
         search_parameters.log_search = True
 
     solution = routing.SolveWithParameters(search_parameters)
