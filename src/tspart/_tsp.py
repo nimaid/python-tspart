@@ -1,4 +1,5 @@
 import random
+import numpy as np
 import scipy.spatial
 from ortools.constraint_solver import pywrapcp, routing_enums_pb2
 
@@ -33,12 +34,14 @@ def solve(points, closed=False):
         routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC
     )
 
+    search_parameters.log_search = True
+
     solution = routing.SolveWithParameters(search_parameters)
 
     index = routing.Start(0)
-    route = [manager.IndexToNode(index)]
+    route = np.ndarray([manager.IndexToNode(index)])
     while not routing.IsEnd(index):
         index = solution.Value(routing.NextVar(index))
-        route.append(manager.IndexToNode(index))
+        np.append(route, manager.IndexToNode(index))
 
     return route
