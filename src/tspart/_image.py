@@ -22,8 +22,9 @@ def split_cmyk(rgb_array, threshhold=1):
     return tuple(result)
 
 
-def image_to_cmyk_parts(image):
-    data = np.asarray(image.convert("RGB"))
-    cmyk = split_cmyk(data)
+def split_rgb(rgb_array):
+    r = rgb_array[:, :, 0]
+    g = rgb_array[:, :, 1]
+    b = rgb_array[:, :, 2]
 
-    return (Image.fromarray(_) for _ in cmyk)
+    return r, g, b

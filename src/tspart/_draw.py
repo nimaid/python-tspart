@@ -3,6 +3,8 @@ from typing import Tuple, Any
 import numpy as np
 from PIL import Image, ImageDraw
 
+from tspart._helpers import get_bounding_corners
+
 
 def map_route_points(points, route):
     return np.array([points[idx] for idx in route])
@@ -17,7 +19,7 @@ def draw_points(
         subpixels=8
 ):
     if size is None:
-        size = (np.ceil(points.max(0)).astype(int) + 1)
+        size = (get_bounding_corners(points)[1] + 1)
     else:
         size = np.array(size[::-1])
 
@@ -58,7 +60,7 @@ def draw_route(
         subpixels=8
 ):
     if size is None:
-        size = (np.ceil(points.max(0)).astype(int) + 1)
+        size = (get_bounding_corners(points)[1] + 1)
     else:
         size = np.array(size[::-1])
 

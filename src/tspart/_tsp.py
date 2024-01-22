@@ -1,8 +1,15 @@
 import random
-import math
 import numpy as np
 import scipy.spatial
 from ortools.constraint_solver import pywrapcp, routing_enums_pb2
+
+from tspart._helpers import get_bounding_corners
+
+
+def nearest_point_index(points, location):
+    distance, index = scipy.spatial.KDTree(points).query(location)
+
+    return int(index)
 
 
 # See https://developers.google.com/optimization/routing/tsp
@@ -13,8 +20,13 @@ def solve(points, closed=False, solution_limit=None, time_limit_minutes=1, loggi
     if closed:
         manager = pywrapcp.RoutingIndexManager(num_points, 1, 0)
     else:
-        end = random.choice([_ for _ in range(1, num_points)])
-        manager = pywrapcp.RoutingIndexManager(num_points, 1, [0], [end])
+        size = (get_bounding_corners(points)[1] + 1)
+
+        h_middle = int(round(size[0] / 2))
+        start = nearest_point_index(points, [h_middle, 0])
+        end = nearest_point_index(points, [h_middle, size[1]])
+
+        manager = pywrapcp.RoutingIndexManager(num_points, 1, [start], [end])
 
     routing_parameters = pywrapcp.DefaultRoutingModelParameters()
     if logging and verbose:

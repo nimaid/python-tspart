@@ -6,5 +6,4 @@ from tspart._scripts import run
 from tspart._stippler import stipple
 from tspart._tsp import solve
 from tspart._draw import draw_points, draw_route
-
-from tspart._files import open_image_to_bw_array
+from tspart._image import split_rgb, split_cmyk

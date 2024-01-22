@@ -8,6 +8,5 @@ dependencies:
       - scipy
       - numpy
       - etatime
-      - imageio>=3
       - Pillow
       - ortools
