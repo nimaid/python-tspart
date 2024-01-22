@@ -22,12 +22,16 @@ def transform(
         foreground=(0, 0, 0),
         line_width=2
 ):
+    if logging:
+        print(f"Stippling with {stipple_points} points over {stipple_iterations} iterations...", file=sys.stderr)
     points = stipple(
         grayscale_array,
         points=stipple_points,
         iterations=stipple_iterations
     )
 
+    if logging:
+        print(f"Solving with  a time linit of {time_limit_minutes} minutes and a solution limit of {solution_limit} ...", file=sys.stderr)
     route = solve(
         points=points,
         closed=closed,
@@ -73,7 +77,8 @@ def transform_cmyk(
     for idx, channel in enumerate(cmyk):
         color_name, color = colors[idx]
 
-        print(f"Processsing {color_name} channel ({idx+1}/{len(cmyk)})...", file=sys.stderr)
+        if logging:
+            print(f"Processsing {color_name} channel ({idx+1}/{len(cmyk)})...", file=sys.stderr)
 
         channel_image = transform(
             grayscale_array=channel,
