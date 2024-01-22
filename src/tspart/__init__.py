@@ -7,3 +7,4 @@ from tspart._stippler import stipple
 from tspart._tsp import solve
 from tspart._draw import draw_points, draw_route
 from tspart._image import split_rgb, split_cmyk
+from tspart._transform import image_to_array, transform, transform_cmyk
