@@ -29,7 +29,7 @@ def draw_points(points, size=None, background=(255, 255, 255), foreground=(0, 0,
     return img
 
 
-def draw_route(points, route, size=None, background=(255, 255, 255), foreground=(0, 0, 0), line_width=2):
+def draw_route(points, route, size=None, background=(255, 255, 255), foreground=(0, 0, 0), line_width=2, draw_dot=False, dot_radius=2):
     if size is None:
         size = tuple(np.ceil(points.max(0)).astype(int) + 1)
 
@@ -43,17 +43,15 @@ def draw_route(points, route, size=None, background=(255, 255, 255), foreground=
         point = tuple(point.round().astype(int))
 
         # Draw dot
-        '''
-        radius = line_width
-        draw.ellipse(
-            xy=(
-                (round(point[0]-radius), round(point[1]-radius)),
-                (round(point[0]+radius), round(point[1]+radius))
-            ),
-            fill=foreground,
-            outline=None
-        )
-        '''
+        if draw_dot:
+            draw.ellipse(
+                xy=(
+                    (round(point[0]-dot_radius), round(point[1]-dot_radius)),
+                    (round(point[0]+dot_radius), round(point[1]+dot_radius))
+                ),
+                fill=foreground,
+                outline=None
+            )
 
         # Draw line
         if last_point is not None:
