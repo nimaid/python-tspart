@@ -2,8 +2,8 @@
 
 __version__ = "0.1.0"
 
-from tspart.main import run
+from tspart.scripts import run
 from tspart.vstipple import stipple
+from tspart.tsp import solve
 
 from tspart.files import open_image_to_bw_array
-import tspart.tsp

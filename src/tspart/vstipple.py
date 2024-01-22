@@ -49,7 +49,7 @@ def stipple(
         iterations=50
 ):
     # We want (approximately) 500 pixels per voronoi region
-    zoom = round((points * 500) / (greyscale_array.shape[0] * greyscale_array.shape[1]))
+    zoom = (points * 500) / (greyscale_array.shape[0] * greyscale_array.shape[1])
     density = scipy.ndimage.zoom(greyscale_array, zoom, order=0)
 
     density = 1.0 - normalize(density)
