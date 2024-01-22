@@ -23,7 +23,7 @@ def transform(
 
     if logging:
         print(f"Solving with a time limit of {int(round(time_limit_minutes * 60 * 1000))}"
-              f"ms and a solution limit of {solution_limit}...", file=sys.stderr)
+              f" ms and a solution limit of {solution_limit}...", file=sys.stderr)
     route = solve(
         points=points,
         closed=closed,

@@ -22,6 +22,8 @@ def draw_points(
     size_scale = tuple((size * subpixels).round().astype(int))
     size = tuple(size.round().astype(int))
 
+    subpixels = max(1, subpixels)
+
     radius = int(round(radius * subpixels))
 
     img = Image.new(mode="RGB", size=size_scale, color=background)
@@ -123,7 +125,6 @@ def draw_cmyk_routes(
             background=(0, 0, 0),
             foreground=sub_colors[idx],
             line_width=line_width,
-            draw_dot=False,
             subpixels=subpixels
         ).convert("RGB")
 
