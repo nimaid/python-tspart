@@ -1,18 +1,19 @@
 import random
+import math
 import numpy as np
 import scipy.spatial
 from ortools.constraint_solver import pywrapcp, routing_enums_pb2
 
-
 # See https://developers.google.com/optimization/routing/tsp
-def solve(points, closed=False, log=True, verbose=False):
-    distance_matrix = scipy.spatial.distance.cdist(points, points)
+def solve(points, closed=False, solution_limit=None, time_limit_minutes=1, log=True, verbose=False):
+    distance_matrix = scipy.spatial.distance.cdist(points, points).round().astype(int)
+    num_points = len(points)
 
     if closed:
-        manager = pywrapcp.RoutingIndexManager(len(distance_matrix), 1, 0)
+        manager = pywrapcp.RoutingIndexManager(num_points, 1, 0)
     else:
-        end = random.choice([_ for _ in range(1, len(points))])
-        manager = pywrapcp.RoutingIndexManager(len(distance_matrix), 1, [0], [end])
+        end = random.choice([_ for _ in range(1, num_points)])
+        manager = pywrapcp.RoutingIndexManager(num_points, 1, [0], [end])
 
     routing_parameters = pywrapcp.DefaultRoutingModelParameters()
     if log and verbose:
@@ -33,6 +34,13 @@ def solve(points, closed=False, log=True, verbose=False):
     search_parameters.first_solution_strategy = (
         routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC
     )
+
+    search_parameters.local_search_metaheuristic = (
+        routing_enums_pb2.LocalSearchMetaheuristic.GUIDED_LOCAL_SEARCH)
+    if solution_limit:
+        search_parameters.solution_limit = solution_limit
+    if time_limit_minutes:
+        search_parameters.time_limit.seconds = time_limit_minutes * 60
 
     if log:
         search_parameters.log_search = True
