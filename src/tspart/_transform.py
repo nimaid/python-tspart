@@ -31,7 +31,8 @@ def transform(
     )
 
     if logging:
-        print(f"Solving with  a time linit of {time_limit_minutes} minutes and a solution limit of {solution_limit} ...", file=sys.stderr)
+        print(f"Solving with  a time limit of {int(round(time_limit_minutes * 60 * 1000))} ms"
+              f"minutes and a solution limit of {solution_limit}...", file=sys.stderr)
     route = solve(
         points=points,
         closed=closed,
@@ -67,10 +68,10 @@ def transform_cmyk(
     cmyk = split_cmyk(rgb_array)
 
     colors = (
-        ("cyan", (0, 255, 255)),
-        ("magenta", (255, 0, 255)),
-        ("yellow", (255, 255, 0)),
-        ("black", (0, 0, 0))
+        ("cyan", (255, 0, 0)),
+        ("magenta", (0, 255, 0)),
+        ("yellow", (0, 0, 255)),
+        ("black", (255, 255, 255))
     )
 
     channel_images = []
