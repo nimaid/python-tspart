@@ -11,7 +11,8 @@ def transform(
         solution_limit=None,
         time_limit_minutes=1,
         logging=True,
-        verbose=False
+        verbose=False,
+        routing=True
 ):
     if logging:
         print(f"Stippling with {stipple_points} points over {stipple_iterations} iterations...", file=sys.stderr)
@@ -21,19 +22,22 @@ def transform(
         iterations=stipple_iterations
     )
 
-    if logging:
-        print(f"Solving with a time limit of {int(round(time_limit_minutes * 60 * 1000))}"
-              f" ms and a solution limit of {solution_limit}...", file=sys.stderr)
-    route = solve(
-        points=points,
-        closed=closed,
-        solution_limit=solution_limit,
-        time_limit_minutes=time_limit_minutes,
-        logging=logging,
-        verbose=verbose
-    )
+    if routing:
+        if logging:
+            print(f"Solving with a time limit of {int(round(time_limit_minutes * 60 * 1000))}"
+                  f" ms and a solution limit of {solution_limit}...", file=sys.stderr)
+        route = solve(
+            points=points,
+            closed=closed,
+            solution_limit=solution_limit,
+            time_limit_minutes=time_limit_minutes,
+            logging=logging,
+            verbose=verbose
+        )
 
-    return map_points_to_route(points, route)
+        return map_points_to_route(points, route)
+    else:
+        return points
 
 
 def transform_cmyk(
@@ -44,7 +48,8 @@ def transform_cmyk(
         solution_limit=None,
         time_limit_minutes=1,
         logging=True,
-        verbose=False
+        verbose=False,
+        routing=True
 ):
     cmyk = split_cmyk(rgb_array)
 
@@ -63,7 +68,8 @@ def transform_cmyk(
             solution_limit=solution_limit,
             time_limit_minutes=time_limit_minutes,
             logging=logging,
-            verbose=verbose
+            verbose=verbose,
+            routing=routing
         )
 
         cmyk_routes.append(channel_image)

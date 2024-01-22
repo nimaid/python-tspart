@@ -46,6 +46,40 @@ def draw_points(
     return img
 
 
+def draw_cmyk_points(
+        cmyk_points,
+        size=None,
+        radius=2,
+        subpixels=8
+):
+    if size is None:
+        size = tuple(np.array(get_bounding_corners(cmyk_points[0])[1]) + 1)
+    else:
+        size = tuple(size)
+
+    sub_colors = (
+        (255, 0, 0),
+        (0, 255, 0),
+        (0, 0, 255),
+        (255, 255, 255)
+    )
+
+    img = Image.new(size=size[::-1], mode="RGB", color=(255, 255, 255))
+    for idx, channel_points in enumerate(cmyk_points):
+        channel_img = draw_points(
+            points=channel_points,
+            size=size,
+            background=(0, 0, 0),
+            foreground=sub_colors[idx],
+            radius=radius,
+            subpixels=subpixels
+        ).convert("RGB")
+
+        img = ImageChops.subtract(img, channel_img)
+
+    return img
+
+
 def draw_route(
         points,
         size=None,
