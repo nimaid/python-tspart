@@ -78,7 +78,7 @@ def transform_cmyk(
         color_name, color = colors[idx]
 
         if logging:
-            print(f"Processsing {color_name} channel ({idx+1}/{len(cmyk)})...", file=sys.stderr)
+            print(f"\n\nProcesssing {color_name} channel ({idx+1}/{len(cmyk)})...\n", file=sys.stderr)
 
         channel_image = transform(
             grayscale_array=channel,
