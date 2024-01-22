@@ -53,6 +53,7 @@ def stipple(
     density = scipy.ndimage.zoom(greyscale_array, zoom, order=0)
 
     density = 1.0 - normalize(density)
+    #density = density[::-1, :]
     density_P = density.cumsum(axis=1)
     density_Q = density_P.cumsum(axis=1)
 
