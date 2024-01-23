@@ -3,6 +3,8 @@ from ortools.constraint_solver import pywrapcp, routing_enums_pb2
 
 from tspart._helpers import get_bounding_corners, nearest_point_index
 
+# To use Concorde online for free, see: https://neos-server.org/neos/solvers/co:concorde/TSP.html
+
 
 # See https://developers.google.com/optimization/routing/tsp
 def solve_ortools(points, closed=False, time_limit_minutes=1, logging=True, verbose=False):

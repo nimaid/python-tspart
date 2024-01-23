@@ -17,7 +17,7 @@ def transform(
         verbose=False,
         routing=True
 ):
-    if grayscale_array:
+    if grayscale_array is not None:
         if logging:
             print(f"Stippling with {stipple_points} points over {stipple_iterations} iterations...", file=sys.stderr)
         points = stipple(
@@ -25,7 +25,7 @@ def transform(
             points=stipple_points,
             iterations=stipple_iterations
         )
-    elif grayscale_array and points:
+    elif grayscale_array is not None and points is not None:
         raise ValueError("Must provide only 1 of grayscale_array or points")
     if points is None:
         raise ValueError("Must provide either grayscale_array or points")
@@ -59,7 +59,7 @@ def transform_cmyk(
 ):
     colors = ("cyan", "magenta", "yellow", "black")
 
-    if rgb_array:
+    if rgb_array is not None:
         cmyk = split_cmyk(rgb_array)
 
         cmyk_routes = []
@@ -79,7 +79,7 @@ def transform_cmyk(
             )
 
             cmyk_routes.append(channel_image)
-    elif cmyk_points:
+    elif cmyk_points is not None:
         cmyk_routes = []
         for idx, channel in enumerate(cmyk_points):
             if logging:
@@ -97,7 +97,7 @@ def transform_cmyk(
             )
 
             cmyk_routes.append(channel_image)
-    elif rgb_array and cmyk_points:
+    elif rgb_array is not None and cmyk_points is not None:
         raise ValueError("Must provide only 1 of rgb_array or cmyk_routes")
     else:
         raise ValueError("Must provide either rgb_array or cmyk_routes")
