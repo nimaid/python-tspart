@@ -1,6 +1,6 @@
 import sys
 
-from tspart import stipple, solve, split_cmyk, map_points_to_route
+from tspart import stipple, solve_ortools, split_cmyk, map_points_to_route
 
 
 def transform(
@@ -8,7 +8,6 @@ def transform(
         stipple_points=5000,
         stipple_iterations=50,
         closed=False,
-        solution_limit=None,
         time_limit_minutes=1,
         logging=True,
         verbose=False,
@@ -24,12 +23,10 @@ def transform(
 
     if routing:
         if logging:
-            print(f"Solving with a time limit of {int(round(time_limit_minutes * 60 * 1000))}"
-                  f" ms and a solution limit of {solution_limit}...", file=sys.stderr)
-        route = solve(
+            print(f"Solving with a time limit of {int(round(time_limit_minutes * 60 * 1000))} ms...", file=sys.stderr)
+        route = solve_ortools(
             points=points,
             closed=closed,
-            solution_limit=solution_limit,
             time_limit_minutes=time_limit_minutes,
             logging=logging,
             verbose=verbose
@@ -45,7 +42,6 @@ def transform_cmyk(
         stipple_points=5000,
         stipple_iterations=50,
         closed=False,
-        solution_limit=None,
         time_limit_minutes=1,
         logging=True,
         verbose=False,
@@ -65,7 +61,6 @@ def transform_cmyk(
             stipple_points=stipple_points,
             stipple_iterations=stipple_iterations,
             closed=closed,
-            solution_limit=solution_limit,
             time_limit_minutes=time_limit_minutes,
             logging=logging,
             verbose=verbose,

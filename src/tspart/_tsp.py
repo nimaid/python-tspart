@@ -13,7 +13,7 @@ def nearest_point_index(points, location):
 
 
 # See https://developers.google.com/optimization/routing/tsp
-def solve(points, closed=False, solution_limit=None, time_limit_minutes=1, logging=True, verbose=False):
+def solve_ortools(points, closed=False, time_limit_minutes=1, logging=True, verbose=False):
     distance_matrix = scipy.spatial.distance.cdist(points, points).round().astype(int)
     num_points = len(points)
 
@@ -50,8 +50,6 @@ def solve(points, closed=False, solution_limit=None, time_limit_minutes=1, loggi
 
     search_parameters.local_search_metaheuristic = (
         routing_enums_pb2.LocalSearchMetaheuristic.GUIDED_LOCAL_SEARCH)
-    if solution_limit:
-        search_parameters.solution_limit = solution_limit
     if time_limit_minutes:
         search_parameters.time_limit.seconds = int(round(time_limit_minutes * 60))
 

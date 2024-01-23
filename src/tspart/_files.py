@@ -1,6 +1,7 @@
 import json
+from PIL import Image
 
-from tspart._helpers import ndarray_to_array_2d
+from tspart._helpers import ndarray_to_array_2d, image_to_array
 
 
 def save_json(filename, obj, indent=2):
@@ -15,9 +16,20 @@ def load_json(filename):
     return obj
 
 
-def save_cmyk_routes(filename, cmyk_routes, size, indent=2):
-    cmyk_routes = ndarray_to_array_2d(cmyk_routes)
+def save_routes(filename, routes, size, indent=2):
+    routes = ndarray_to_array_2d(routes)
 
-    obj = {"size": size, "cmyk_routes": cmyk_routes}
+    obj = {"size": size, "routes": routes}
 
     save_json(filename=filename, obj=obj, indent=indent)
+
+
+def load_routes(filename):
+    obj = load_json(filename)
+
+    return obj["routes"], obj["size"]
+
+
+def load_image_as_array(filename, mode="RGB"):
+    img = Image.open(filename)
+    return image_to_array(img, mode)
