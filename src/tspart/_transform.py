@@ -1,7 +1,7 @@
 import sys
 
 from tspart._stippler import stipple
-from tspart._tsp import solve_ortools
+from tspart._tsp import heuristic_solve
 from tspart._helpers import map_points_to_route
 from tspart._image import split_cmyk
 
@@ -33,7 +33,7 @@ def transform(
     if routing:
         if logging:
             print(f"Solving with a time limit of {int(round(time_limit_minutes * 60 * 1000))} ms...", file=sys.stderr)
-        route = solve_ortools(
+        route = heuristic_solve(
             points=points,
             closed=closed,
             time_limit_minutes=time_limit_minutes,

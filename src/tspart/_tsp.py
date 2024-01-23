@@ -7,7 +7,7 @@ from tspart._helpers import get_bounding_corners, nearest_point_index
 
 
 # See https://developers.google.com/optimization/routing/tsp
-def solve_ortools(points, closed=False, time_limit_minutes=1, logging=True, verbose=False):
+def heuristic_solve(points, closed=False, time_limit_minutes=1, logging=True, verbose=False):
     distance_matrix = scipy.spatial.distance.cdist(points, points).round().astype(int)
     num_points = len(points)
 
