@@ -1,6 +1,6 @@
 """TSP Art Module for Python"""
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 from tspart._scripts import run
 from tspart._stippler import stipple
