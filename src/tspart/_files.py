@@ -47,3 +47,10 @@ def save_tsplib(filename, points, route_points=False):
 
         for idx, (x, y) in enumerate(points):
             f.write(f"{idx + 1} {x:.6f} {y:.6f}\n")
+
+
+def load_cyc_route(filename):
+    with open(filename, "r") as f:
+        route = [int(_.strip()) for _ in f.readlines() if _.strip() != ""]
+
+    return route

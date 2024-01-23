@@ -12,4 +12,6 @@ from tspart._helpers import (
     luminance
 )
 from tspart._transform import transform, transform_cmyk
-from tspart._files import save_json, load_json, save_routes, load_routes, load_image_as_array, save_tsplib
+from tspart._files import (
+    save_json, load_json, save_routes, load_routes, load_image_as_array, save_tsplib, load_cyc_route
+)
