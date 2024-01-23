@@ -1,6 +1,7 @@
 <div align="center">
     <p><b>TSP Art</b></p>
     <p>TSP Art Module for Python</p>
+    <br>
     <a href="https://pypi.org/project/tspart/"><img src="https://img.shields.io/pypi/pyversions/tspart?logo=python&logoColor=white" alt="Python Version" /></a>
     <a href="https://pypi.org/project/tspart/"><img src="https://img.shields.io/pypi/v/tspart?logo=PyPI&logoColor=white" alt="PyPI Version" /></a>
     <br>
