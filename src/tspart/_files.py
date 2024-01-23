@@ -1,3 +1,4 @@
+import io
 import json
 from PIL import Image
 
@@ -33,3 +34,15 @@ def load_routes(filename):
 def load_image_as_array(filename, mode="RGB"):
     img = Image.open(filename)
     return image_to_array(img, mode)
+
+
+def save_tsplib(filename, points):
+    with io.open(filename, "w", newline='\r\n') as f:
+        f.write("NAME: tspart\n")
+        f.write("TYPE: TSP\n")
+        f.write(f"DIMENSION: {len(points)} 0\n")
+        f.write("EDGE_WEIGHT_TYPE: EUC_2D\n")
+        f.write("NODE_COORD_SECTION\n")
+
+        for idx, (x, y) in enumerate(points):
+            f.write(f"{idx + 1} {x:.6f} {y:.6f}\n")
