@@ -97,7 +97,7 @@ def transform_cmyk(
             )
 
             cmyk_routes.append(channel_image)
-    elif rgb_array and cmyk_routes:
+    elif rgb_array and cmyk_points:
         raise ValueError("Must provide only 1 of rgb_array or cmyk_routes")
     else:
         raise ValueError("Must provide either rgb_array or cmyk_routes")
