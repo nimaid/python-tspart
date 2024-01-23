@@ -7,7 +7,8 @@ from tspart._image import split_cmyk
 
 
 def transform(
-        grayscale_array,
+        grayscale_array=None,
+        points=None,
         stipple_points=5000,
         stipple_iterations=50,
         closed=False,
@@ -16,13 +17,18 @@ def transform(
         verbose=False,
         routing=True
 ):
-    if logging:
-        print(f"Stippling with {stipple_points} points over {stipple_iterations} iterations...", file=sys.stderr)
-    points = stipple(
-        grayscale_array,
-        points=stipple_points,
-        iterations=stipple_iterations
-    )
+    if grayscale_array:
+        if logging:
+            print(f"Stippling with {stipple_points} points over {stipple_iterations} iterations...", file=sys.stderr)
+        points = stipple(
+            grayscale_array,
+            points=stipple_points,
+            iterations=stipple_iterations
+        )
+    elif grayscale_array and points:
+        raise ValueError("Must provide only 1 of grayscale_array or points")
+    if points is None:
+        raise ValueError("Must provide either grayscale_array or points")
 
     if routing:
         if logging:
@@ -41,7 +47,8 @@ def transform(
 
 
 def transform_cmyk(
-        rgb_array,
+        rgb_array=None,
+        cmyk_points=None,
         stipple_points=5000,
         stipple_iterations=50,
         closed=False,
@@ -50,26 +57,49 @@ def transform_cmyk(
         verbose=False,
         routing=True
 ):
-    cmyk = split_cmyk(rgb_array)
-
     colors = ("cyan", "magenta", "yellow", "black")
 
-    cmyk_routes = []
-    for idx, channel in enumerate(cmyk):
-        if logging:
-            print(f"\n\nProcesssing {colors[idx]} channel ({idx+1}/{len(cmyk)})...\n", file=sys.stderr)
+    if rgb_array:
+        cmyk = split_cmyk(rgb_array)
 
-        channel_image = transform(
-            grayscale_array=channel,
-            stipple_points=stipple_points,
-            stipple_iterations=stipple_iterations,
-            closed=closed,
-            time_limit_minutes=time_limit_minutes,
-            logging=logging,
-            verbose=verbose,
-            routing=routing
-        )
+        cmyk_routes = []
+        for idx, channel in enumerate(cmyk):
+            if logging:
+                print(f"\n\nProcesssing {colors[idx]} channel ({idx + 1}/{len(cmyk)})...\n", file=sys.stderr)
 
-        cmyk_routes.append(channel_image)
+            channel_image = transform(
+                grayscale_array=channel,
+                stipple_points=stipple_points,
+                stipple_iterations=stipple_iterations,
+                closed=closed,
+                time_limit_minutes=time_limit_minutes,
+                logging=logging,
+                verbose=verbose,
+                routing=routing
+            )
+
+            cmyk_routes.append(channel_image)
+    elif cmyk_points:
+        cmyk_routes = []
+        for idx, channel in enumerate(cmyk_points):
+            if logging:
+                print(f"\n\nProcesssing {colors[idx]} channel ({idx + 1}/{len(cmyk_points)})...\n", file=sys.stderr)
+
+            channel_image = transform(
+                points=channel,
+                stipple_points=stipple_points,
+                stipple_iterations=stipple_iterations,
+                closed=closed,
+                time_limit_minutes=time_limit_minutes,
+                logging=logging,
+                verbose=verbose,
+                routing=routing
+            )
+
+            cmyk_routes.append(channel_image)
+    elif rgb_array and cmyk_routes:
+        raise ValueError("Must provide only 1 of rgb_array or cmyk_routes")
+    else:
+        raise ValueError("Must provide either rgb_array or cmyk_routes")
 
     return cmyk_routes

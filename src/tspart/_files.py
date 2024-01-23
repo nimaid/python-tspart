@@ -1,8 +1,9 @@
 import io
 import json
+import numpy as np
 from PIL import Image
 
-from tspart._helpers import ndarray_to_array_2d, image_to_array
+from tspart._helpers import ndarray_to_array_2d, image_to_array, array_to_ndarray_2d
 
 
 def save_json(filename, obj, indent=2):
@@ -28,7 +29,7 @@ def save_routes(filename, routes, size, indent=2):
 def load_routes(filename):
     obj = load_json(filename)
 
-    return obj["routes"], obj["size"]
+    return array_to_ndarray_2d(obj["routes"]), obj["size"]
 
 
 def load_image_as_array(filename, mode="RGB"):
@@ -36,7 +37,7 @@ def load_image_as_array(filename, mode="RGB"):
     return image_to_array(img, mode)
 
 
-def save_tsplib(filename, points):
+def save_tsplib(filename, points, route_points=False):
     with io.open(filename, "w", newline='\r\n') as f:
         f.write("NAME: tspart\n")
         f.write("TYPE: TSP\n")

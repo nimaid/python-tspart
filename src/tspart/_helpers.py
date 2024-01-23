@@ -23,6 +23,10 @@ def ndarray_to_array_2d(array):
     return [list([list(__) for __ in _]) for _ in array]
 
 
+def array_to_ndarray_2d(array):
+    return [np.array(_) for _ in array]
+
+
 def nearest_point_index(points, location):
     distance, index = scipy.spatial.KDTree(points).query(location)
 
