@@ -13,7 +13,7 @@
     <a href="https://paypal.me/EllaJameson"><img src="https://img.shields.io/badge/PayPal-donate?logo=paypal&logoColor=white&label=donate&color=purple" alt="Donate" /></a>
 </div>
 
-<p align="center"><img src="docs/example.jpg" width="800px" alt="Example image"/></p>
+<p align="center"><img src="docs/example.png" width="800px" alt="Example image"/></p>
 
 ## Command Line Usage
 ```
