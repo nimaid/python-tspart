@@ -1,15 +1,7 @@
-import random
-import numpy as np
 import scipy.spatial
 from ortools.constraint_solver import pywrapcp, routing_enums_pb2
 
-from tspart._helpers import get_bounding_corners
-
-
-def nearest_point_index(points, location):
-    distance, index = scipy.spatial.KDTree(points).query(location)
-
-    return int(index)
+from tspart._helpers import get_bounding_corners, nearest_point_index
 
 
 # See https://developers.google.com/optimization/routing/tsp

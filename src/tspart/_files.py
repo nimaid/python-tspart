@@ -40,7 +40,7 @@ def save_tsplib(filename, points):
     with io.open(filename, "w", newline='\r\n') as f:
         f.write("NAME: tspart\n")
         f.write("TYPE: TSP\n")
-        f.write(f"DIMENSION: {len(points)} 0\n")
+        f.write(f"DIMENSION: {len(points)}\n")
         f.write("EDGE_WEIGHT_TYPE: EUC_2D\n")
         f.write("NODE_COORD_SECTION\n")
 
