@@ -1,6 +1,9 @@
 import sys
 
-from tspart import stipple, solve_ortools, split_cmyk, map_points_to_route
+from tspart._stippler import stipple
+from tspart._tsp import solve_ortools
+from tspart._helpers import map_points_to_route
+from tspart._image import split_cmyk
 
 
 def transform(

@@ -6,7 +6,7 @@
     <br>
     <a href="https://github.com/nimaid/tspart/actions/workflows/master.yml"><img src="https://img.shields.io/github/actions/workflow/status/nimaid/tspart/master.yml?logo=GitHub" alt="GitHub Build" /></a>
     <a href="https://codecov.io/gh/nimaid/tspart"><img src="https://img.shields.io/codecov/c/github/nimaid/tspart?logo=codecov&logoColor=white" alt="Codecov Coverage" /></a>
-    Codacy Badge
+    <a href="https://app.codacy.com/gh/nimaid/python-tspart/dashboard"><img src="https://app.codacy.com/project/badge/Grade/3b5186afcd5940fcab787150d374e1c8" alt="Codacy Badge" /></a>
     <br>
     <a href="https://github.com/nimaid/tspart/raw/main/LICENSE"><img src="https://img.shields.io/pypi/l/tspart?logo=opensourceinitiative&logoColor=white" alt="License" /></a>
     <a href="https://pypi.org/project/tspart/"><img src="https://img.shields.io/pypi/dm/tspart.svg?label=pypi%20downloads&logo=PyPI&logoColor=white" alt="PyPI Downloads" /></a>

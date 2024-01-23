@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from tspart._constants import DESCRIPTION
+from tspart.constants import DESCRIPTION
 
 
 # Parse arguments

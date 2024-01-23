@@ -3,7 +3,7 @@ import scipy.misc
 import scipy.ndimage
 from etatime import EtaBar
 
-from tspart import voronoi
+from tspart.voronoi import centroids as voronoi_centroids
 
 
 def normalize(D):
@@ -61,6 +61,6 @@ def stipple(
     points = initialization(points, density)
 
     for i in EtaBar(range(iterations)):
-        regions, points = voronoi.centroids(points, density, density_P, density_Q)
+        regions, points = voronoi_centroids(points, density, density_P, density_Q)
 
     return points / zoom
