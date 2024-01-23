@@ -17,23 +17,8 @@
 <p align="center"><img src="docs/example.png" width="800px" alt="Example image"/></p>
 
 ## Command Line Usage
-```
-usage: tspart [-h] -1 FIRST_ARG [-2 SECOND_ARG] [-o OPCODE]
+TODO
 
-A python 3 module.
-
-Valid parameters are shown in {braces}
-Default parameters are shown in [brackets].
-
-options:
-  -h, --help            show this help message and exit
-  -1 FIRST_ARG, --first FIRST_ARG
-                        the first argument
-  -2 SECOND_ARG, --second SECOND_ARG
-                        the second argument [1.0]
-  -o OPCODE, --operation OPCODE
-                        the operation to perform on the arguments, either {+, -, *, /} [+]
-```
 
 ## Usage In Custom Code
 TODO
