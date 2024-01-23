@@ -1,0 +1,26 @@
+name: PyPI Release
+run-name:  Build and Upload to PyPI (${{ github.actor }})
+on:
+  push:
+    branches:
+      - main
+jobs:
+  Build-PyPI:
+    name: Build and Upload to PyPI
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/tspart
+    permissions:
+      id-token: write
+    steps:
+      - run: echo "This job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "Running on a ${{ runner.os }} server."
+      - name: Checkout ${{ github.repository }}
+        uses: actions/checkout@v4
+      - name: Install Python Tools
+        run: python3 -m pip install build twine
+      - name: Build with Python
+        run: python3 -m build
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.8.11
