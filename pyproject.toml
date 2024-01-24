@@ -38,6 +38,3 @@ homepage = "https://github.com/nimaid/python-tspart"
 repository = "https://github.com/nimaid/python-tspart"
 documentation = "https://tspart.readthedocs.io/en/latest/index.html"
 issues = "https://github.com/nimaid/python-tspart/issues"
-
-[project.scripts]
-tspart = "tspart:run"
