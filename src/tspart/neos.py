@@ -138,6 +138,21 @@ def get_solves(client, job_list):
     return result
 
 
+def get_solve_blocking(client, job_number, password, delay_minutes=1):
+    result = None
+    while result is None:
+        result = get_solve(
+            client=client,
+            job_number=job_number,
+            password=password
+        )
+        print("Still waiting for solve...", file=sys.stderr)
+
+        time.sleep(delay_minutes * 60)
+
+    return result
+
+
 def get_solves_blocking(client, job_list, delay_minutes=1):
     n = len(job_list)
 
