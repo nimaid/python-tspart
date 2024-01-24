@@ -53,7 +53,7 @@ def draw_points(
             outline=None
         )
 
-    output = output.resize(size)
+    output = output.resize(size, resample=Image.Resampling.LANCZOS)
 
     return output
 
@@ -151,7 +151,7 @@ def draw_route(
 
         last_point = point
 
-    img = img.resize(size)
+    img = img.resize(size, resample=Image.Resampling.LANCZOS)
 
     return img
 
