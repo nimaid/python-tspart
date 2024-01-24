@@ -169,7 +169,7 @@ def get_solves_blocking(client, job_list, delay_minutes=1):
                 )
 
         results_not_done = [_ is None for _ in result]
-        print(f"{sum(results_not_done)}/{n} solves so far...", file=sys.stderr)
+        print(f"{sum([not _ for _ in results_not_done])}/{n} solves so far...", file=sys.stderr)
 
         time.sleep(delay_minutes * 60)
 
