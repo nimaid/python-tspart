@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image, ImageDraw, ImageChops
 
-from tspart._helpers import get_bounding_corners, rgb_array_size, luminance, ndarray_to_array_2d
+from tspart._helpers import get_bounding_corners, rgb_image_array_size
 
 
 def draw_points(
@@ -17,9 +17,9 @@ def draw_points(
     if size is None and image is None:
         size = (np.array(get_bounding_corners(points)[1]) + 1)
     elif size is None and image is not None:
-        size = rgb_array_size(image)
+        size = rgb_image_array_size(image)
     else:
-        size = np.array(size[::-1])
+        size = np.array(size)
 
     size_scale = tuple((size * subpixels).round().astype(int))
     size = tuple(size.round().astype(int))
@@ -69,7 +69,7 @@ def draw_cmyk_points(
     if size is None and images is None:
         size = (np.array(get_bounding_corners(cmyk_points[0])[1]) + 1)
     elif size is None and images is not None:
-        size = rgb_array_size(images[0])
+        size = rgb_image_array_size(images[0])
     else:
         size = tuple(size)
 
