@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import scipy.misc
 import scipy.ndimage
@@ -43,11 +44,7 @@ def initialization(n, D):
     return np.array(samples)
 
 
-def stipple(
-        grayscale_array,
-        points=5000,
-        iterations=50
-):
+def stipple(grayscale_array, points=5000, iterations=50):
     # We want (approximately) 500 pixels per voronoi region
     zoom = (points * 500) / (grayscale_array.shape[0] * grayscale_array.shape[1])
     density = scipy.ndimage.zoom(grayscale_array, zoom, order=0)
@@ -64,3 +61,18 @@ def stipple(
         regions, points = voronoi_centroids(points, density, density_P, density_Q)
 
     return points / zoom
+
+
+def stipple_multi(grayscale_arrays, points=5000, iterations=50):
+    result = []
+    for idx, grayscale_array in enumerate(grayscale_arrays):
+        print(f"Stippling image {idx + 1}/{len(grayscale_arrays)}", file=sys.stderr)
+        stippled = stipple(
+            grayscale_array=grayscale_array,
+            points=points,
+            iterations=iterations
+        )
+
+        result.append(stippled)
+
+    return result

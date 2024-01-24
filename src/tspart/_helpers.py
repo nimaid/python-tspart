@@ -19,6 +19,17 @@ def map_points_to_route(points, route):
     return np.array([points[idx] for idx in route])
 
 
+def map_points_to_route_multi(points_list, routes_list):
+    result = []
+    for idx, points in enumerate(points_list):
+        routes = routes_list[idx]
+
+        r = map_points_to_route(
+            points,
+            routes
+        )
+
+
 def ndarray_to_array_2d(array):
     return [list([list(__) for __ in _]) for _ in array]
 

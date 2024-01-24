@@ -1,3 +1,4 @@
+import sys
 import scipy.spatial
 from ortools.constraint_solver import pywrapcp, routing_enums_pb2
 
@@ -61,3 +62,20 @@ def heuristic_solve(points, time_limit_minutes=1, symmetric=False, logging=True,
         return route
     else:
         return None
+
+
+def heuristic_solves(points_list, time_limit_minutes=1, symmetric=False, logging=True, verbose=False):
+    result = []
+    for idx, points in enumerate(points_list):
+        print(f"Solving image {idx + 1}/{len(points_list)}", file=sys.stderr)
+        r = heuristic_solve(
+            points=points,
+            time_limit_minutes=time_limit_minutes,
+            symmetric=symmetric,
+            logging=logging,
+            verbose=verbose
+        )
+
+        result.append(r)
+
+    return result

@@ -50,7 +50,7 @@ def make_solver_job(email, points):
 def submit_solve(client, email, points):
     xml_request = make_solver_job(email, points)
 
-    job_number, password = client.SubmitJob(xml_request)
+    job_number, password = client.submitJob(xml_request)
 
     if job_number == 0:
         raise NeosSubmitError(password)
@@ -58,8 +58,31 @@ def submit_solve(client, email, points):
     return job_number, password
 
 
+def submit_solves(client, email, points_list):
+    result = []
+    for points in points_list:
+        r = submit_solve(
+            client=client,
+            email=email,
+            points=points
+        )
+
+        result.append(r)
+
+    return result
+
+
 def cancel_solve(client, job_number, password):
     client.killJob(job_number, password)
+
+
+def cancel_solves(client, job_list):
+    for job_number, password in job_list:
+        cancel_solve(
+            client=client,
+            job_number=job_number,
+            password=password
+        )
 
 
 def get_solve(client, job_number, password):
@@ -82,10 +105,32 @@ def get_solve(client, job_number, password):
         process_arr.append(line)
     process_arr = process_arr[::-1][1:]
 
+    if len(process_arr[0].split(" ")) == 3:
+        short_mode = True
+    else:
+        short_mode = False
+
     solve = []
     for line in process_arr:
-        nums = [int(_) for _ in line.split(" ")]
-
-        solve += nums
+        line = line.split(" ")
+        if short_mode:
+            solve.append(int(line[0]))
+        else:
+            nums = [int(_) for _ in line]
+            solve += nums
 
     return solve
+
+
+def get_solves(client, job_list):
+    result = []
+    for job_number, password in job_list:
+        r = get_solve(
+            client=client,
+            job_number=job_number,
+            password=password
+        )
+
+        result.append(r)
+
+    return result
