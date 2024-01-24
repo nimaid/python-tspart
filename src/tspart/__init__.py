@@ -1,6 +1,6 @@
 """TSP Art Module for Python"""
 
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 from tspart._stippler import stipple
 from tspart._draw import draw_points, draw_cmyk_points, draw_route, draw_cmyk_routes
