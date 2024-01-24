@@ -135,8 +135,8 @@ def draw_route(
         line_width_factor=0.5,
         subpixels=8
 ):
-    if closed:
-        points = list(points) + points[0]
+    # if closed:
+    #     points = list(points) + points[0]
 
     if size is None and image is None:
         size = (np.array(get_bounding_corners(points)[1]) + 1)
@@ -159,11 +159,13 @@ def draw_route(
     last_width = None
     for point in points:
         point = np.array(point)
-        point = tuple((point * subpixels).round().astype(int))
+        y, x = (np.array(point)).round().astype(int)
+
+        point = tuple((point * subpixels))
+
         if image is not None:
-            x, y = (np.array(point) / subpixels).round().astype(int)
-            px = image[y][x]
-            factor = (line_width_factor * (px / 255)) + (1 - line_width_factor)
+            px = image[x][y]
+            factor = (-line_width_factor * (px / 255)) + 1
             width = line_width * factor
         else:
             width = line_width
@@ -208,13 +210,15 @@ def draw_cmyk_routes(
         line_width=2,
         size=None,
         images=None,
-        closed=False,
+        closed=True,
         subpixels=8
 ):
-    if size is None:
-        size = tuple(np.array(get_bounding_corners(cmyk_points[0])[1]) + 1)
+    if size is None and images is None:
+        size = (np.array(get_bounding_corners(cmyk_points[0])[1]) + 1)
+    elif size is None and images is not None:
+        size = image_array_size(images[0])
     else:
-        size = tuple(size)
+        size = np.array(size)
 
     if images is None:
         images = [None] * len(cmyk_points)
