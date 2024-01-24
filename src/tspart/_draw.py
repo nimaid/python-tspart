@@ -101,11 +101,15 @@ def draw_cmyk_points(
 def draw_route(
         points,
         size=None,
+        closed=True,
         background=(255, 255, 255),
         foreground=(0, 0, 0),
         line_width=2,
         subpixels=8
 ):
+    if closed:
+        points = list(points) + points[0]
+
     if size is None:
         size = (np.array(get_bounding_corners(points)[1]) + 1)
     else:
@@ -155,6 +159,7 @@ def draw_route(
 def draw_cmyk_routes(
         cmyk_points,
         size=None,
+        closed=False,
         line_width=2,
         subpixels=8
 ):
@@ -175,6 +180,7 @@ def draw_cmyk_routes(
         channel_img = draw_route(
             points=channel_points,
             size=size,
+            closed=closed,
             background=(0, 0, 0),
             foreground=sub_colors[idx],
             line_width=line_width,
