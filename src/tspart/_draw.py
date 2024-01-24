@@ -80,7 +80,7 @@ def draw_cmyk_points(
         (255, 255, 255)
     )
 
-    output = Image.new(size=size[::-1], mode="RGB", color=(255, 255, 255))
+    output = Image.new(size=size, mode="RGB", color=(255, 255, 255))
     for idx, channel_points in enumerate(cmyk_points):
         channel_img = draw_points(
             points=channel_points,
@@ -175,7 +175,7 @@ def draw_cmyk_routes(
         (255, 255, 255)
     )
 
-    img = Image.new(size=size[::-1], mode="RGB", color=(255, 255, 255))
+    img = Image.new(size=size, mode="RGB", color=(255, 255, 255))
     for idx, channel_points in enumerate(cmyk_points):
         channel_img = draw_route(
             points=channel_points,
