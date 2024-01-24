@@ -1,3 +1,5 @@
+import sys
+import time
 import xmlrpc.client
 
 import tspart._files
@@ -132,5 +134,28 @@ def get_solves(client, job_list):
         )
 
         result.append(r)
+
+    return result
+
+
+def get_solves_blocking(client, job_list, delay_minutes=1):
+    n = len(job_list)
+
+    result = [None] * n
+    results_not_done = [True] * n
+
+    while any(results_not_done):
+        for idx, (job_number, password) in enumerate(job_list):
+            if result[idx] is None:
+                result[idx] = get_solve(
+                    client=client,
+                    job_number=job_number,
+                    password=password
+                )
+
+        results_not_done = [_ is None for _ in result]
+        print(f"{sum(results_not_done)}/{n} solves so far...", file=sys.stderr)
+
+        time.sleep(delay_minutes * 60)
 
     return result
