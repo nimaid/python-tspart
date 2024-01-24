@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image, ImageDraw, ImageChops
 
-from tspart._helpers import get_bounding_corners, image_array_size, line_angle, circle_point
+from tspart._helpers import get_bounding_corners, image_array_size, line_angle, circle_point, ndarray_to_array_2d
 
 
 def draw_points(
@@ -111,12 +111,11 @@ def draw_multi_thickness_line(draw, xy, widths, fill=None):
 
     point_transforms = []
     for point, width in zip(xy, widths):
-        point_a = circle_point(width, angle + (np.pi / 2), point)
-        point_b = circle_point(width, angle - (np.pi / 2), point)
-
-        point_transforms.append([point_a, point_b])
+        point_transforms.append(circle_point(width, angle + (np.pi / 2), point))
+        point_transforms.append(circle_point(width, angle - (np.pi / 2), point))
 
     polygon_points = point_transforms[:2] + point_transforms[2:][::-1]
+    polygon_points = [tuple(_) for _ in polygon_points]
 
     draw.polygon(
         xy=polygon_points,
@@ -161,9 +160,8 @@ def draw_route(
     for point in points:
         point = np.array(point)
         point = tuple((point * subpixels).round().astype(int))
-
         if image is not None:
-            x, y = point.round().astype(int)
+            x, y = (np.array(point) / subpixels).round().astype(int)
             px = image[y][x]
             factor = (line_width_factor * (px / 255)) + (1 - line_width_factor)
             width = line_width * factor
@@ -191,6 +189,7 @@ def draw_route(
                 )
             else:
                 draw_multi_thickness_line(
+                    draw=draw,
                     xy=(last_point, point),
                     widths=(last_width, width),
                     fill=foreground
