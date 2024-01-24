@@ -138,8 +138,10 @@ def get_solves(client, job_list):
     return result
 
 
-def get_solve_blocking(client, job_number, password, delay_minutes=1):
+def get_solve_blocking(client, job_number, password, delay_minutes=1, slowdown_rate=1.1):
     result = None
+
+    tries = 0
     while result is None:
         result = get_solve(
             client=client,
@@ -148,7 +150,9 @@ def get_solve_blocking(client, job_number, password, delay_minutes=1):
         )
         print("Still waiting for solve...", file=sys.stderr)
 
-        time.sleep(delay_minutes * 60)
+        time.sleep(delay_minutes * 60 * (slowdown_rate ** tries))
+
+        tries += 1
 
     return result
 
