@@ -29,6 +29,10 @@ def map_points_to_route_multi(points_list, routes_list):
             routes
         )
 
+        result.append(r)
+
+    return result
+
 
 def ndarray_to_array_2d(array):
     return [list([list(__) for __ in _]) for _ in array]
