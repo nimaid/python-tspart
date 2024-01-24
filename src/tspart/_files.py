@@ -37,16 +37,22 @@ def load_image_as_array(filename, mode="RGB"):
     return image_to_array(img, mode)
 
 
-def save_tsplib(filename, points, route_points=False):
-    with io.open(filename, "w", newline='\r\n') as f:
-        f.write("NAME: tspart\n")
-        f.write("TYPE: TSP\n")
-        f.write(f"DIMENSION: {len(points)}\n")
-        f.write("EDGE_WEIGHT_TYPE: EUC_2D\n")
-        f.write("NODE_COORD_SECTION\n")
+def make_tsplib(points):
+    result = "NAME: tspart\r\n"
+    result += "TYPE: TSP\r\n"
+    result += f"DIMENSION: {len(points)}\r\n"
+    result += "EDGE_WEIGHT_TYPE: EUC_2D\r\n"
+    result += "NODE_COORD_SECTION\r\n"
 
-        for idx, (x, y) in enumerate(points):
-            f.write(f"{idx + 1} {x:.6f} {y:.6f}\n")
+    for idx, (x, y) in enumerate(points):
+        result +=f"{idx + 1} {x:.6f} {y:.6f}\r\n"
+
+    return result
+
+
+def save_tsplib(filename, points):
+    with open(filename, "w") as f:
+        f.write(make_tsplib(points))
 
 
 def load_cyc_route(filename):

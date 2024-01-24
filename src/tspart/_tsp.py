@@ -3,15 +3,13 @@ from ortools.constraint_solver import pywrapcp, routing_enums_pb2
 
 from tspart._helpers import get_bounding_corners, nearest_point_index
 
-# To use Concorde online for free, see: https://neos-server.org/neos/solvers/co:concorde/TSP.html
-
 
 # See https://developers.google.com/optimization/routing/tsp
-def heuristic_solve(points, closed=False, time_limit_minutes=1, logging=True, verbose=False):
+def heuristic_solve(points, time_limit_minutes=1, symmetric=False, logging=True, verbose=False):
     distance_matrix = scipy.spatial.distance.cdist(points, points).round().astype(int)
     num_points = len(points)
 
-    if closed:
+    if symmetric:
         manager = pywrapcp.RoutingIndexManager(num_points, 1, 0)
     else:
         size = (get_bounding_corners(points)[1] + 1)
