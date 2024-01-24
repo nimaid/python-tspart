@@ -113,7 +113,7 @@ def draw_route(
     if size is None:
         size = (np.array(get_bounding_corners(points)[1]) + 1)
     else:
-        size = np.array(size[::-1])
+        size = np.array(size)
 
     subpixels = max(1, subpixels)
 
