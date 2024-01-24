@@ -54,4 +54,23 @@ def image_array_size(img):
 
 def luminance(rgb):
     r, g, b = rgb
+
     return ((0.299 * r) + (0.587 * g) + (0.114 * b)) / 255.0
+
+
+def line_angle(start, end):
+    d = np.array(end) - np.array(start)
+
+    return np.arctan2(d[1], d[0])
+
+
+def circle_point(radius, angle, offset=(0, 0)):
+    offset = np.array(offset)
+
+    x = radius * np.cos(angle)
+    y = radius * np.sin(angle)
+
+    point = np.array([x, y])
+
+    return point + offset
+

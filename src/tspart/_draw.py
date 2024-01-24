@@ -1,16 +1,16 @@
 import numpy as np
 from PIL import Image, ImageDraw, ImageChops
 
-from tspart._helpers import get_bounding_corners, image_array_size
+from tspart._helpers import get_bounding_corners, image_array_size, line_angle, circle_point
 
 
 def draw_points(
         points,
-        image=None,
+        radius=2,
         size=None,
+        image=None,
         background=(255, 255, 255),
         foreground=(0, 0, 0),
-        radius=2,
         radius_factor=0.5,
         subpixels=8
 ):
@@ -60,9 +60,9 @@ def draw_points(
 
 def draw_cmyk_points(
         cmyk_points,
-        images=None,
-        size=None,
         radius=2,
+        size=None,
+        images=None,
         radius_factor=0.5,
         subpixels=8
 ):
@@ -72,6 +72,9 @@ def draw_cmyk_points(
         size = image_array_size(images[0])
     else:
         size = tuple(size)
+
+    if images is None:
+        images = [None] * len(cmyk_points)
 
     sub_colors = (
         (255, 0, 0),
@@ -98,20 +101,48 @@ def draw_cmyk_points(
     return output
 
 
+def draw_multi_thickness_line(draw, xy, widths, fill=None):
+    if len(xy) != 2:
+        raise ValueErrror("xy must be of length 2")
+    if len(widths) != 2:
+        raise ValueErrror("widths must be of length 2")
+
+    angle = line_angle(xy[0], xy[1])
+
+    point_transforms = []
+    for point, width in zip(xy, widths):
+        point_a = circle_point(width, angle + (np.pi / 2), point)
+        point_b = circle_point(width, angle - (np.pi / 2), point)
+
+        point_transforms.append([point_a, point_b])
+
+    polygon_points = point_transforms[:2] + point_transforms[2:][::-1]
+
+    draw.polygon(
+        xy=polygon_points,
+        fill=fill,
+        outline=None
+    )
+
+
 def draw_route(
         points,
+        line_width=2,
         size=None,
+        image=None,
         closed=True,
         background=(255, 255, 255),
         foreground=(0, 0, 0),
-        line_width=2,
+        line_width_factor=0.5,
         subpixels=8
 ):
     if closed:
         points = list(points) + points[0]
 
-    if size is None:
+    if size is None and image is None:
         size = (np.array(get_bounding_corners(points)[1]) + 1)
+    elif size is None and image is not None:
+        size = image_array_size(image)
     else:
         size = np.array(size)
 
@@ -120,22 +151,31 @@ def draw_route(
     size_scale = tuple((size * subpixels).round().astype(int))
     size = tuple(size.round().astype(int))
 
-    line_width = int(round(line_width * subpixels))
-    dot_radius = int(round(line_width / 2))
+    line_width = line_width * subpixels
 
     img = Image.new(mode="RGB", size=size_scale, color=background)
     draw = ImageDraw.Draw(img)
 
     last_point = None
+    last_width = None
     for point in points:
         point = np.array(point)
         point = tuple((point * subpixels).round().astype(int))
 
+        if image is not None:
+            x, y = point.round().astype(int)
+            px = image[y][x]
+            factor = (line_width_factor * (px / 255)) + (1 - line_width_factor)
+            width = line_width * factor
+        else:
+            width = line_width
+        r = width / 2
+
         # Draw dot
         draw.ellipse(
             xy=(
-                (round(point[0] - dot_radius), round(point[1] - dot_radius)),
-                (round(point[0] + dot_radius), round(point[1] + dot_radius))
+                (round(point[0] - r), round(point[1] - r)),
+                (round(point[0] + r), round(point[1] + r))
             ),
             fill=foreground,
             outline=None
@@ -143,13 +183,21 @@ def draw_route(
 
         # Draw line
         if last_point is not None:
-            draw.line(
-                xy=(last_point, point),
-                fill=foreground,
-                width=line_width
-            )
+            if image is None:
+                draw.line(
+                    xy=(last_point, point),
+                    fill=foreground,
+                    width=width
+                )
+            else:
+                draw_multi_thickness_line(
+                    xy=(last_point, point),
+                    widths=(last_width, width),
+                    fill=foreground
+                )
 
         last_point = point
+        last_width = width
 
     img = img.resize(size, resample=Image.Resampling.LANCZOS)
 
@@ -158,8 +206,9 @@ def draw_route(
 
 def draw_cmyk_routes(
         cmyk_points,
-        size=None,
         line_width=2,
+        size=None,
+        images=None,
         closed=False,
         subpixels=8
 ):
@@ -167,6 +216,9 @@ def draw_cmyk_routes(
         size = tuple(np.array(get_bounding_corners(cmyk_points[0])[1]) + 1)
     else:
         size = tuple(size)
+
+    if images is None:
+        images = [None] * len(cmyk_points)
 
     sub_colors = (
         (255, 0, 0),
@@ -180,6 +232,7 @@ def draw_cmyk_routes(
         channel_img = draw_route(
             points=channel_points,
             size=size,
+            image=images[idx],
             closed=closed,
             background=(0, 0, 0),
             foreground=sub_colors[idx],
