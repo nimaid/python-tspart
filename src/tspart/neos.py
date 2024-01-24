@@ -153,12 +153,13 @@ def get_solve_blocking(client, job_number, password, delay_minutes=1):
     return result
 
 
-def get_solves_blocking(client, job_list, delay_minutes=1):
+def get_solves_blocking(client, job_list, delay_minutes=1, slowdown_rate=1.1):
     n = len(job_list)
 
     result = [None] * n
     results_not_done = [True] * n
 
+    tries = 0
     while any(results_not_done):
         for idx, (job_number, password) in enumerate(job_list):
             if result[idx] is None:
@@ -175,6 +176,8 @@ def get_solves_blocking(client, job_list, delay_minutes=1):
         else:
             print(f"{num_solves}/{n} solves done!", file=sys.stderr)
 
-        time.sleep(delay_minutes * 60)
+        time.sleep(delay_minutes * 60 * (slowdown_rate ** tries))
+
+        tries += 1
 
     return result
