@@ -1,7 +1,7 @@
 import sys
 
 from tspart._stippler import stipple
-from tspart._tsp import heuristic_solve
+from tspart.tsp import heuristic_solve
 from tspart._helpers import map_points_to_route
 from tspart._image import split_cmyk
 
