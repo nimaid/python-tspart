@@ -49,7 +49,7 @@ def nearest_point_index(points, location):
 
 
 def image_array_size(img):
-    return tuple(int(round(_)) for _ in img.shape[:2])[::-1]
+    return tuple([int(round(_)) for _ in img.shape[:2]][::-1])
 
 
 def luminance(rgb):

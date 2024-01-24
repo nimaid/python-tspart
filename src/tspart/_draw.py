@@ -111,8 +111,9 @@ def draw_multi_thickness_line(draw, xy, widths, fill=None):
 
     point_transforms = []
     for point, width in zip(xy, widths):
-        point_transforms.append(circle_point(width, angle + (np.pi / 2), point))
-        point_transforms.append(circle_point(width, angle - (np.pi / 2), point))
+        radius = width / 2
+        point_transforms.append(circle_point(radius, angle + (np.pi / 2), point))
+        point_transforms.append(circle_point(radius, angle - (np.pi / 2), point))
 
     polygon_points = point_transforms[:2] + point_transforms[2:][::-1]
     polygon_points = [tuple(_) for _ in polygon_points]
@@ -132,11 +133,11 @@ def draw_route(
         closed=True,
         background=(255, 255, 255),
         foreground=(0, 0, 0),
-        line_width_factor=0.5,
+        line_width_factor=0.95,
         subpixels=8
 ):
     # if closed:
-    #     points = list(points) + points[0]
+    #     points = list(points).append(points[0])
 
     if size is None and image is None:
         size = (np.array(get_bounding_corners(points)[1]) + 1)
@@ -190,6 +191,7 @@ def draw_route(
                     width=width
                 )
             else:
+                pass
                 draw_multi_thickness_line(
                     draw=draw,
                     xy=(last_point, point),
@@ -211,6 +213,7 @@ def draw_cmyk_routes(
         size=None,
         images=None,
         closed=True,
+        line_width_factor=0.95,
         subpixels=8
 ):
     if size is None and images is None:
@@ -218,7 +221,7 @@ def draw_cmyk_routes(
     elif size is None and images is not None:
         size = image_array_size(images[0])
     else:
-        size = np.array(size)
+        size = tuple(size)
 
     if images is None:
         images = [None] * len(cmyk_points)
@@ -240,6 +243,7 @@ def draw_cmyk_routes(
             background=(0, 0, 0),
             foreground=sub_colors[idx],
             line_width=line_width,
+            line_width_factor=line_width_factor,
             subpixels=subpixels
         ).convert("RGB")
 
