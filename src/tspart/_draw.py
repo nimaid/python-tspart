@@ -159,8 +159,8 @@ def draw_route(
 def draw_cmyk_routes(
         cmyk_points,
         size=None,
-        closed=False,
         line_width=2,
+        closed=False,
         subpixels=8
 ):
     if size is None:
