@@ -52,12 +52,6 @@ def image_array_size(img):
     return tuple([int(round(_)) for _ in img.shape[:2]][::-1])
 
 
-def luminance(rgb):
-    r, g, b = rgb
-
-    return ((0.299 * r) + (0.587 * g) + (0.114 * b)) / 255.0
-
-
 def line_angle(start, end):
     d = np.array(end) - np.array(start)
 
@@ -74,3 +68,25 @@ def circle_point(radius, angle, offset=(0, 0)):
 
     return point + offset
 
+
+def factors_from_image(grayscale_array, points):
+    factors = []
+    for point in points:
+        x, y = tuple(np.array(point).round().astype(int))
+
+        factors.append(grayscale_array[x][y] / 255)
+
+    return factors
+
+
+def factors_from_image_multi(grayscale_arrays, points_list):
+    factors_list = []
+    for grayscale_array, points in zip(grayscale_arrays, points_list):
+        factors = factors_from_image(
+            grayscale_array=grayscale_array,
+            points=points
+        )
+
+        factors_list.append(factors)
+
+    return factors_list

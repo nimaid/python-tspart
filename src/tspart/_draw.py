@@ -30,22 +30,17 @@ def draw_multi_thickness_line(draw, xy, widths, fill=None):
 
 def draw_route(
         points,
+        factors,
+        size,
         line_width=2,
-        size=None,
-        image=None,
+        minimum_line_width_factor=0.05,
         scale=1,
         closed=True,
         background=(255, 255, 255),
         foreground=(0, 0, 0),
-        line_width_factor=0.95,
         subpixels=8
 ):
-    if size is None and image is None:
-        size = (np.array(get_bounding_corners(points)[1]) + 1)
-    elif size is None and image is not None:
-        size = np.array(image_array_size(image))
-    else:
-        size = np.array(size)
+    size = np.array(size)
 
     subpixels = max(1, subpixels)
 
@@ -61,21 +56,12 @@ def draw_route(
     last_point = None
     last_width = None
 
-    def draw_line_to_point(p, cap=True):
+    def draw_line_to_point(p, f, cap=True):
         nonlocal last_point, last_width
 
-        p = np.array(p)
-        y, x = (np.array(p)).round().astype(int)
-
-        p = tuple((p * subpixels * scale))
-
-        if image is not None:
-            px = image[x][y]
-            factor = (-line_width_factor * (px / 255)) + 1
-            width = line_width * factor
-        else:
-            width = line_width
-        r = width / 2
+        f_p = ((1 - minimum_line_width_factor) * f) + minimum_line_width_factor
+        w = f_p * line_width
+        r = w / 2
 
         # Draw dot
         if cap:
@@ -90,28 +76,21 @@ def draw_route(
 
         # Draw line
         if last_point is not None:
-            if image is None:
-                draw.line(
-                    xy=(last_point, p),
-                    fill=foreground,
-                    width=width
-                )
-            else:
-                draw_multi_thickness_line(
-                    draw=draw,
-                    xy=(last_point, p),
-                    widths=(last_width, width),
-                    fill=foreground
-                )
+            draw_multi_thickness_line(
+                draw=draw,
+                xy=(last_point, p),
+                widths=(last_width, w),
+                fill=foreground
+            )
 
         last_point = p
-        last_width = width
+        last_width = w
 
-    for point in points:
-        draw_line_to_point(point)
+    for point, factor in zip(points, factors):
+        draw_line_to_point(point, factor)
 
     if closed:
-        draw_line_to_point(points[0], cap=False)
+        draw_line_to_point(points[0], factors[0], cap=False)
 
     img = img.resize(size_out, resample=Image.Resampling.LANCZOS)
 
@@ -120,25 +99,17 @@ def draw_route(
 
 def draw_cmyk_routes(
         cmyk_points,
-        line_width=2,
+        cmyk_factors,
         size=None,
-        images=None,
+        line_width=2,
+        minimum_line_width_factor=0.05,
         scale=1,
         closed=True,
-        line_width_factor=0.95,
         subpixels=8
 ):
-    if size is None and images is None:
-        size = (np.array(get_bounding_corners(cmyk_points[0])[1]) + 1)
-    elif size is None and images is not None:
-        size = np.array(image_array_size(images[0]))
-    else:
-        size = np.array(size)
+    size = np.array(size)
 
     size_out = tuple((size * scale).round().astype(int))
-
-    if images is None:
-        images = [None] * len(cmyk_points)
 
     sub_colors = (
         (255, 0, 0),
@@ -151,14 +122,14 @@ def draw_cmyk_routes(
     for idx, channel_points in enumerate(cmyk_points):
         channel_img = draw_route(
             points=channel_points,
+            factors=cmyk_factors[idx],
             size=size,
-            image=images[idx],
+            line_width=line_width,
+            minimum_line_width_factor=minimum_line_width_factor,
             scale=scale,
             closed=closed,
             background=(0, 0, 0),
             foreground=sub_colors[idx],
-            line_width=line_width,
-            line_width_factor=line_width_factor,
             subpixels=subpixels
         ).convert("RGB")
 

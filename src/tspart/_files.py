@@ -21,18 +21,23 @@ def load_json(filename):
     return obj
 
 
-def save_routes(filename, routes, size, indent=2):
-    routes = ndarray_to_array_2d(routes)
+def save_tspart(filename, points, factors, size, indent=2):
+    points = ndarray_to_array_2d(points)
+    factors = ndarray_to_array_2d(factors)
 
-    obj = {"size": size, "routes": routes}
+    obj = {"points": points, "factors": factors, "size": size}
 
     save_json(filename=filename, obj=obj, indent=indent)
 
 
-def load_routes(filename):
+def load_tspart(filename):
     obj = load_json(filename)
 
-    return array_to_ndarray_2d(obj["routes"]), obj["size"]
+    points = array_to_ndarray_2d(obj["points"])
+    factors = array_to_ndarray_2d(obj["factors"])
+    size = obj["size"]
+
+    return {"points": points, "factors": factors, "size": size}
 
 
 def load_image_as_array(filename, mode="RGB"):
