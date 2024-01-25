@@ -135,6 +135,8 @@ def draw_cmyk_routes(
     else:
         size = tuple(size)
 
+    size_out = tuple((size * scale).round().astype(int))
+
     if images is None:
         images = [None] * len(cmyk_points)
 
@@ -145,7 +147,7 @@ def draw_cmyk_routes(
         (255, 255, 255)
     )
 
-    img = Image.new(size=size, mode="RGB", color=(255, 255, 255))
+    img = Image.new(size=size_out, mode="RGB", color=(255, 255, 255))
     for idx, channel_points in enumerate(cmyk_points):
         channel_img = draw_route(
             points=channel_points,
