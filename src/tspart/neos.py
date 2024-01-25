@@ -148,14 +148,15 @@ def get_solves(client, job_list, points_list=None):
     return result
 
 
-def get_solve_blocking(client, job_number, password, delay_minutes=0.25, logging=True):
+def get_solve_blocking(client, job_number, password, points=None, delay_minutes=0.25, logging=True):
     result = None
 
     while result is None:
         result = get_solve(
             client=client,
             job_number=job_number,
-            password=password
+            password=password,
+            points=points
         )
         if logging:
             print("Still waiting for solve...", file=sys.stderr)
@@ -165,7 +166,7 @@ def get_solve_blocking(client, job_number, password, delay_minutes=0.25, logging
     return result
 
 
-def get_solves_blocking(client, job_list, delay_minutes=0.25, logging=True):
+def get_solves_blocking(client, job_list, points_list=None, delay_minutes=0.25, logging=True):
     n = len(job_list)
 
     result = [None] * n
@@ -173,11 +174,16 @@ def get_solves_blocking(client, job_list, delay_minutes=0.25, logging=True):
 
     while any(results_not_done):
         for idx, (job_number, password) in enumerate(job_list):
+            points = None
+            if points_list is not None:
+                points = points_list[idx]
+
             if result[idx] is None:
                 result[idx] = get_solve(
                     client=client,
                     job_number=job_number,
-                    password=password
+                    password=password,
+                    points=points
                 )
 
         results_not_done = [_ is None for _ in result]
