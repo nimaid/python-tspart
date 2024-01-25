@@ -129,11 +129,11 @@ def draw_cmyk_routes(
         subpixels=8
 ):
     if size is None and images is None:
-        size = tuple(np.array(get_bounding_corners(cmyk_points[0])[1]) + 1)
+        size = (np.array(get_bounding_corners(cmyk_points[0])[1]) + 1)
     elif size is None and images is not None:
-        size = image_array_size(images[0])
+        size = np.array(image_array_size(images[0]))
     else:
-        size = tuple(size)
+        size = np.array(size)
 
     size_out = tuple((size * scale).round().astype(int))
 
