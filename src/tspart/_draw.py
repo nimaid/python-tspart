@@ -157,6 +157,8 @@ def draw_route(
     last_width = None
 
     def draw_line_to_point(p, cap=True):
+        nonlocal last_point, last_width
+
         p = np.array(p)
         y, x = (np.array(p)).round().astype(int)
 
@@ -197,7 +199,7 @@ def draw_route(
                     fill=foreground
                 )
 
-        last_point = point
+        last_point = p
         last_width = width
 
     for point in points:
