@@ -1,13 +1,13 @@
 """TSP Art Module for Python"""
 
-__version__ = "0.3.5"
+__version__ = "0.3.6"
 
 
 import tspart.voronoi
 import tspart.tsp
 import tspart.neos
 
-from tspart._draw import draw_points, draw_cmyk_points, draw_route, draw_cmyk_routes
+from tspart._draw import draw_route, draw_cmyk_routes
 from tspart._image import split_rgb, split_cmyk
 from tspart._helpers import image_to_array, map_points_to_route, map_points_to_route_multi, image_array_size
 from tspart._files import (
