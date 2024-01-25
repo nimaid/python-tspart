@@ -136,9 +136,6 @@ def draw_route(
         line_width_factor=0.95,
         subpixels=8
 ):
-    # if closed:
-    #     points = list(points).append(points[0])
-
     if size is None and image is None:
         size = (np.array(get_bounding_corners(points)[1]) + 1)
     elif size is None and image is not None:
@@ -158,11 +155,12 @@ def draw_route(
 
     last_point = None
     last_width = None
-    for point in points:
-        point = np.array(point)
-        y, x = (np.array(point)).round().astype(int)
 
-        point = tuple((point * subpixels))
+    def draw_line_to_point(p, cap=True):
+        p = np.array(p)
+        y, x = (np.array(p)).round().astype(int)
+
+        p = tuple((p * subpixels))
 
         if image is not None:
             px = image[x][y]
@@ -173,34 +171,37 @@ def draw_route(
         r = width / 2
 
         # Draw dot
-        draw.ellipse(
-            xy=(
-                (round(point[0] - r), round(point[1] - r)),
-                (round(point[0] + r), round(point[1] + r))
-            ),
-            fill=foreground,
-            outline=None
-        )
+        if cap:
+            draw.ellipse(
+                xy=(
+                    (round(p[0] - r), round(p[1] - r)),
+                    (round(p[0] + r), round(p[1] + r))
+                ),
+                fill=foreground,
+                outline=None
+            )
 
         # Draw line
         if last_point is not None:
             if image is None:
                 draw.line(
-                    xy=(last_point, point),
+                    xy=(last_point, p),
                     fill=foreground,
                     width=width
                 )
             else:
-                pass
                 draw_multi_thickness_line(
                     draw=draw,
-                    xy=(last_point, point),
+                    xy=(last_point, p),
                     widths=(last_width, width),
                     fill=foreground
                 )
 
-        last_point = point
-        last_width = width
+    for point in points:
+        draw_line_to_point(point)
+
+    if closed:
+        draw_line_to_point(points[0], cap=False)
 
     img = img.resize(size, resample=Image.Resampling.LANCZOS)
 
