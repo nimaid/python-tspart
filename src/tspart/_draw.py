@@ -18,7 +18,7 @@ def draw_points(
     if size is None and image is None:
         size = (np.array(get_bounding_corners(points)[1]) + 1)
     elif size is None and image is not None:
-        size = image_array_size(image)
+        size = np.array(image_array_size(image))
     else:
         size = np.array(size)
 
@@ -27,7 +27,7 @@ def draw_points(
     scale_factor = subpixels * scale
 
     size_scale = tuple((size * scale_factor).round().astype(int))
-    size = tuple((size * scale).round().astype(int))
+    size_out = tuple((size * scale).round().astype(int))
 
     radius = int(round(radius * scale_factor))
 
@@ -45,7 +45,7 @@ def draw_points(
         else:
             r = radius
 
-        point = tuple((point * scale_factor).round().astype(int))
+        point = tuple((point * subpixels).round().astype(int))
 
         draw.ellipse(
             xy=(
@@ -56,7 +56,7 @@ def draw_points(
             outline=None
         )
 
-    output = output.resize(size, resample=Image.Resampling.LANCZOS)
+    output = output.resize(size_out, resample=Image.Resampling.LANCZOS)
 
     return output
 
@@ -71,9 +71,9 @@ def draw_cmyk_points(
         subpixels=8
 ):
     if size is None and images is None:
-        size = (np.array(get_bounding_corners(cmyk_points[0])[1]) + 1)
+        size = tuple(np.array(get_bounding_corners(cmyk_points[0])[1]) + 1)
     elif size is None and images is not None:
-        size = image_array_size(images[0])
+        size = np.array(image_array_size(images[0]))
     else:
         size = tuple(size)
 
@@ -145,7 +145,7 @@ def draw_route(
     if size is None and image is None:
         size = (np.array(get_bounding_corners(points)[1]) + 1)
     elif size is None and image is not None:
-        size = image_array_size(image)
+        size = np.array(image_array_size(image))
     else:
         size = np.array(size)
 
@@ -154,9 +154,10 @@ def draw_route(
     scale_factor = subpixels * scale
 
     size_scale = tuple((size * scale_factor).round().astype(int))
-    size = tuple((size * scale).round().astype(int))
 
-    line_width = line_width * subpixels
+    size_out = tuple((size * scale).round().astype(int))
+
+    line_width = line_width * scale_factor
 
     img = Image.new(mode="RGB", size=size_scale, color=background)
     draw = ImageDraw.Draw(img)
@@ -170,7 +171,7 @@ def draw_route(
         p = np.array(p)
         y, x = (np.array(p)).round().astype(int)
 
-        p = tuple((p * scale_factor))
+        p = tuple((p * subpixels))
 
         if image is not None:
             px = image[x][y]
@@ -216,7 +217,7 @@ def draw_route(
     if closed:
         draw_line_to_point(points[0], cap=False)
 
-    img = img.resize(size, resample=Image.Resampling.LANCZOS)
+    img = img.resize(size_out, resample=Image.Resampling.LANCZOS)
 
     return img
 
@@ -232,7 +233,7 @@ def draw_cmyk_routes(
         subpixels=8
 ):
     if size is None and images is None:
-        size = (np.array(get_bounding_corners(cmyk_points[0])[1]) + 1)
+        size = tuple(np.array(get_bounding_corners(cmyk_points[0])[1]) + 1)
     elif size is None and images is not None:
         size = image_array_size(images[0])
     else:
