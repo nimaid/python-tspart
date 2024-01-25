@@ -17,7 +17,9 @@
 <p align="center"><img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/docs/example.png" width="800px" alt="Example image"/></p>
 
 # Usage
-See [The Jupyter notebook](https://github.com/nimaid/python-tspart/blob/main/tspart.ipynb) for a basic usage example.
+See [The Jupyter notebook](https://github.com/nimaid/python-tspart/blob/main/tspart.ipynb) to learn how to use the library.
+
+To test it out in your browser, head over to [Google Colab](https://colab.research.google.com/github/nimaid/python-tspart/blob/main/tspart.ipynb)!
 
 # Full Documentation
 <p align="center"><a href="https://tspart.readthedocs.io/en/latest/index.html"><img src="https://brand-guidelines.readthedocs.org/_images/logo-wordmark-vertical-dark.png" width="300px" alt="tspart on Read the Docs"></a></p>
