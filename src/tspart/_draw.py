@@ -9,6 +9,7 @@ def draw_points(
         radius=2,
         size=None,
         image=None,
+        scale=1,
         background=(255, 255, 255),
         foreground=(0, 0, 0),
         radius_factor=0.5,
@@ -21,12 +22,14 @@ def draw_points(
     else:
         size = np.array(size)
 
-    size_scale = tuple((size * subpixels).round().astype(int))
-    size = tuple(size.round().astype(int))
-
     subpixels = max(1, subpixels)
 
-    radius = int(round(radius * subpixels))
+    scale_factor = subpixels * scale
+
+    size_scale = tuple((size * scale_factor).round().astype(int))
+    size = tuple((size * scale).round().astype(int))
+
+    radius = int(round(radius * scale_factor))
 
     output = Image.new(mode="RGB", size=size_scale, color=background)
     draw = ImageDraw.Draw(output)
@@ -42,7 +45,7 @@ def draw_points(
         else:
             r = radius
 
-        point = tuple((point * subpixels).round().astype(int))
+        point = tuple((point * scale_factor).round().astype(int))
 
         draw.ellipse(
             xy=(
@@ -63,6 +66,7 @@ def draw_cmyk_points(
         radius=2,
         size=None,
         images=None,
+        scale=1,
         radius_factor=0.5,
         subpixels=8
 ):
@@ -89,6 +93,7 @@ def draw_cmyk_points(
             points=channel_points,
             image=images[idx],
             size=size,
+            scale=scale,
             background=(0, 0, 0),
             foreground=sub_colors[idx],
             radius=radius,
@@ -130,6 +135,7 @@ def draw_route(
         line_width=2,
         size=None,
         image=None,
+        scale=1,
         closed=True,
         background=(255, 255, 255),
         foreground=(0, 0, 0),
@@ -145,8 +151,10 @@ def draw_route(
 
     subpixels = max(1, subpixels)
 
-    size_scale = tuple((size * subpixels).round().astype(int))
-    size = tuple(size.round().astype(int))
+    scale_factor = subpixels * scale
+
+    size_scale = tuple((size * scale_factor).round().astype(int))
+    size = tuple((size * scale).round().astype(int))
 
     line_width = line_width * subpixels
 
@@ -162,7 +170,7 @@ def draw_route(
         p = np.array(p)
         y, x = (np.array(p)).round().astype(int)
 
-        p = tuple((p * subpixels))
+        p = tuple((p * scale_factor))
 
         if image is not None:
             px = image[x][y]
@@ -218,6 +226,7 @@ def draw_cmyk_routes(
         line_width=2,
         size=None,
         images=None,
+        scale=1,
         closed=True,
         line_width_factor=0.95,
         subpixels=8
@@ -245,6 +254,7 @@ def draw_cmyk_routes(
             points=channel_points,
             size=size,
             image=images[idx],
+            scale=scale,
             closed=closed,
             background=(0, 0, 0),
             foreground=sub_colors[idx],
