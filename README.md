@@ -16,7 +16,7 @@
 
 <p align="center"><img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/docs/example.png" width="800px" alt="Example image"/></p>
 
-## Usage
+# Usage
 See [The Jupyter notebook](https://github.com/nimaid/python-tspart/blob/main/tspart.ipynb) for a basic usage example.
 
 # Full Documentation

@@ -291,7 +291,7 @@ def initialization(n, D):
     return np.array(samples)
 
 
-def stipple_image(grayscale_array, points=5000, iterations=50):
+def stipple_image(grayscale_array, points=5000, iterations=50, logging=True):
     # We want (approximately) 500 pixels per voronoi region
     zoom = (points * 500) / (grayscale_array.shape[0] * grayscale_array.shape[1])
     density = scipy.ndimage.zoom(grayscale_array, zoom, order=0)
@@ -303,20 +303,28 @@ def stipple_image(grayscale_array, points=5000, iterations=50):
     # Initialization
     points = initialization(points, density)
 
-    for i in EtaBar(range(iterations)):
+    if logging:
+        iter = EtaBar(range(iterations))
+    else:
+        iter = range(iterations)
+
+    for i in iter:
         regions, points = centroids(points, density, density_P, density_Q)
 
     return points / zoom
 
 
-def stipple_image_multi(grayscale_arrays, points=5000, iterations=50):
+def stipple_image_multi(grayscale_arrays, points=5000, iterations=50, logging=True):
     result = []
     for idx, grayscale_array in enumerate(grayscale_arrays):
-        print(f"Stippling image {idx + 1}/{len(grayscale_arrays)}", file=sys.stderr)
+        if logging:
+            print(f"Stippling image {idx + 1}/{len(grayscale_arrays)}", file=sys.stderr)
+
         stippled = stipple_image(
             grayscale_array=grayscale_array,
             points=points,
-            iterations=iterations
+            iterations=iterations,
+            logging=logging
         )
 
         result.append(stippled)
