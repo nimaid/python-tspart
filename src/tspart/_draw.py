@@ -56,11 +56,16 @@ def draw_route(
     last_point = None
     last_width = None
 
-    def draw_line_to_point(p, f, cap=True):
+    def draw_line_to_point(p, f=None, cap=True):
         nonlocal last_point, last_width
 
-        f_p = ((1 - minimum_line_width_factor) * f) + minimum_line_width_factor
-        w = f_p * line_width
+        p = tuple((p * subpixels * scale))
+
+        if f is None:
+            w = line_width
+        else:
+            f_p = ((1 - minimum_line_width_factor) * f) + minimum_line_width_factor
+            w = f_p * line_width
         r = w / 2
 
         # Draw dot

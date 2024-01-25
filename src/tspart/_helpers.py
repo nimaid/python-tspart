@@ -76,7 +76,7 @@ def factors_from_image(grayscale_array, points):
 
         factors.append(grayscale_array[x][y] / 255)
 
-    return factors
+    return np.array(factors)
 
 
 def factors_from_image_multi(grayscale_arrays, points_list):
