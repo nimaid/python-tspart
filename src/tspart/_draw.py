@@ -197,6 +197,9 @@ def draw_route(
                     fill=foreground
                 )
 
+        last_point = point
+        last_width = width
+
     for point in points:
         draw_line_to_point(point)
 
