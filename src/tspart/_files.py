@@ -23,7 +23,7 @@ def load_json(filename):
 
 def save_tspart(filename, points, factors, size, indent=2):
     points = ndarray_to_array_2d(points)
-    factors = ndarray_to_array_2d(factors)
+    factors = [float(_) for _ in factors]
 
     obj = {"points": points, "factors": factors, "size": size}
 
@@ -34,7 +34,7 @@ def load_tspart(filename):
     obj = load_json(filename)
 
     points = array_to_ndarray_2d(obj["points"])
-    factors = array_to_ndarray_2d(obj["factors"])
+    factors = np.array(obj["factors"])
     size = obj["size"]
 
     return {"points": points, "factors": factors, "size": size}
