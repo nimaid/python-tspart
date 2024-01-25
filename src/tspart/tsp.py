@@ -4,7 +4,7 @@ from ortools.constraint_solver import pywrapcp, routing_enums_pb2
 
 from tspart._helpers import get_bounding_corners as _get_bounding_corners
 from tspart._helpers import nearest_point_index as _nearest_point_index
-from tspart._helpers import map_points_to_route as _map_points_to_route
+from tspart._helpers import map_points_to_tour as _map_points_to_tour
 
 
 # See https://developers.google.com/optimization/routing/tsp
@@ -61,7 +61,7 @@ def heuristic_solve(points, time_limit_minutes=1, symmetric=True, logging=True, 
             index = solution.Value(routing.NextVar(index))
             tour.append(manager.IndexToNode(index))
 
-        route = _map_points_to_route(points, tour)
+        route = _map_points_to_tour(points, tour)
 
         return route
     else:

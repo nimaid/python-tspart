@@ -15,16 +15,16 @@ def image_to_array(image, mode):
     return np.asarray(image.convert(mode))
 
 
-def map_points_to_route(points, route):
-    return np.array([points[idx] for idx in route])
+def map_points_to_tour(points, tour):
+    return np.array([points[idx] for idx in tour])
 
 
-def map_points_to_route_multi(points_list, routes_list):
+def map_points_to_tour_multi(points_list, tours_list):
     result = []
     for idx, points in enumerate(points_list):
-        routes = routes_list[idx]
+        routes = tours_list[idx]
 
-        r = map_points_to_route(
+        r = map_points_to_tour(
             points,
             routes
         )

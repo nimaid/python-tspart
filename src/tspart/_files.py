@@ -88,8 +88,8 @@ def load_tsplib(filename):
     return decode_tsplib(text)
 
 
-def load_cyc_route(filename):
+def load_cyc_tour(filename):
     with open(filename, "r") as f:
-        route = [int(_.strip()) for _ in f.readlines() if _.strip() != ""]
+        tour = [int(_.strip()) for _ in f.readlines() if _.strip() != ""]
 
-    return route
+    return tour

@@ -3,7 +3,7 @@ import time
 import xmlrpc.client
 
 from tspart._files import make_tsplib as _make_tsplib
-from tspart._helpers import map_points_to_route as _map_points_to_route
+from tspart._helpers import map_points_to_tour as _map_points_to_tour
 
 
 class NeosPingError(ConnectionError):
@@ -126,7 +126,7 @@ def get_solve(client, job_number, password, points=None):
     if points is None:
         return tour
 
-    return _map_points_to_route(points, tour)
+    return _map_points_to_tour(points, tour)
 
 
 def get_solves(client, job_list, points_list=None):
