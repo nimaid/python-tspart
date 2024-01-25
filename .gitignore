@@ -154,4 +154,3 @@ cython_debug/
 *.exe
 .idea/*
 tests/.Concorde/*
-tests/tspart*
