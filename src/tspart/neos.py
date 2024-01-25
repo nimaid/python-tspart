@@ -2,7 +2,8 @@ import sys
 import time
 import xmlrpc.client
 
-import tspart._files
+from tspart._files import make_tsplib as _make_tsplib
+from tspart._helpers import map_points_to_route as _map_points_to_route
 
 
 class NeosPingError(ConnectionError):
@@ -35,7 +36,7 @@ def make_solver_job(email, points):
     result += f"<email><![CDATA[{email}]]></email>\n"
 
     result += "<tsp><![CDATA[\n"
-    result += tspart._files.make_tsplib(points).replace("\r\n", "\n")
+    result += _make_tsplib(points).replace("\r\n", "\n")
     result += "]]></tsp>\n"
 
     result += "<ALGTYPE><![CDATA[con]]></ALGTYPE>\n"
@@ -87,7 +88,7 @@ def cancel_solves(client, job_list):
         )
 
 
-def get_solve(client, job_number, password):
+def get_solve(client, job_number, password, points=None):
     if client.getJobStatus(job_number, password) != "Done":
         return None
 
@@ -99,38 +100,47 @@ def get_solve(client, job_number, password):
 
     results_arr = [_.strip() for _ in neos_results.data.decode().split("\n") if _.strip() != ""]
 
-    process_arr = []
+    # Get the tour indexes from the raw response
+    raw_tour = []
     for line in results_arr[::-1]:
         if not all([_.isnumeric() for _ in line.split(" ")]):
             break
 
-        process_arr.append(line)
-    process_arr = process_arr[::-1][1:]
+        raw_tour.append(line)
+    raw_tour = raw_tour[::-1][1:]
 
-    if len(process_arr[0].split(" ")) == 3:
+    if len(raw_tour[0].split(" ")) == 3:
         short_mode = True
     else:
         short_mode = False
 
-    solve = []
-    for line in process_arr:
+    tour = []
+    for line in raw_tour:
         line = line.split(" ")
         if short_mode:
-            solve.append(int(line[0]))
+            tour.append(int(line[0]))
         else:
             nums = [int(_) for _ in line]
-            solve += nums
+            tour += nums
 
-    return solve
+    if points is None:
+        return tour
+
+    return _map_points_to_route(points, tour)
 
 
-def get_solves(client, job_list):
+def get_solves(client, job_list, points_list=None):
     result = []
-    for job_number, password in job_list:
+    for idx, (job_number, password) in enumerate(job_list):
+        points = None
+        if points_list is not None:
+            points = points_list[idx]
+
         r = get_solve(
             client=client,
             job_number=job_number,
-            password=password
+            password=password,
+            points=points
         )
 
         result.append(r)
@@ -182,3 +192,4 @@ def get_solves_blocking(client, job_list, delay_minutes=0.25, logging=True):
             time.sleep(delay_minutes * 60)
 
     return result
+

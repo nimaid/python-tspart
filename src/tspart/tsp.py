@@ -2,7 +2,9 @@ import sys
 import scipy.spatial
 from ortools.constraint_solver import pywrapcp, routing_enums_pb2
 
-from tspart._helpers import get_bounding_corners, nearest_point_index
+from tspart._helpers import get_bounding_corners as _get_bounding_corners
+from tspart._helpers import nearest_point_index as _nearest_point_index
+from tspart._helpers import map_points_to_route as _map_points_to_route
 
 
 # See https://developers.google.com/optimization/routing/tsp
@@ -13,11 +15,11 @@ def heuristic_solve(points, time_limit_minutes=1, symmetric=True, logging=True, 
     if symmetric:
         manager = pywrapcp.RoutingIndexManager(num_points, 1, 0)
     else:
-        size = (get_bounding_corners(points)[1] + 1)
+        size = (_get_bounding_corners(points)[1] + 1)
 
         h_middle = int(round(size[0] / 2))
-        start = nearest_point_index(points, [h_middle, 0])
-        end = nearest_point_index(points, [h_middle, size[1]])
+        start = _nearest_point_index(points, [h_middle, 0])
+        end = _nearest_point_index(points, [h_middle, size[1]])
 
         manager = pywrapcp.RoutingIndexManager(num_points, 1, [start], [end])
 
@@ -53,11 +55,13 @@ def heuristic_solve(points, time_limit_minutes=1, symmetric=True, logging=True, 
 
     if solution:
         index = routing.Start(0)
-        route = [manager.IndexToNode(index)]
+        tour = [manager.IndexToNode(index)]
 
         while not routing.IsEnd(index):
             index = solution.Value(routing.NextVar(index))
-            route.append(manager.IndexToNode(index))
+            tour.append(manager.IndexToNode(index))
+
+        route = _map_points_to_route(points, tour)
 
         return route
     else:
