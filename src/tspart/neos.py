@@ -138,7 +138,7 @@ def get_solves(client, job_list):
     return result
 
 
-def get_solve_blocking(client, job_number, password, delay_minutes=1, slowdown_rate=1.05, logging=True):
+def get_solve_blocking(client, job_number, password, delay_minutes=0.25, slowdown_rate=1.05, logging=True):
     slowdown_rate = max(1, slowdown_rate)
 
     result = None

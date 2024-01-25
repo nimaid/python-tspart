@@ -1,6 +1,6 @@
 """TSP Art Module for Python"""
 
-__version__ = "0.3.6"
+__version__ = "0.3.7"
 
 
 import tspart.voronoi
