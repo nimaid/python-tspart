@@ -24,12 +24,10 @@ def draw_points(
 
     subpixels = max(1, subpixels)
 
-    scale_factor = subpixels * scale
-
-    size_scale = tuple((size * scale_factor).round().astype(int))
+    size_scale = tuple((size * subpixels * scale).round().astype(int))
     size_out = tuple((size * scale).round().astype(int))
 
-    radius = int(round(radius * scale_factor))
+    radius = int(round(radius * subpixels))
 
     output = Image.new(mode="RGB", size=size_scale, color=background)
     draw = ImageDraw.Draw(output)
@@ -151,13 +149,11 @@ def draw_route(
 
     subpixels = max(1, subpixels)
 
-    scale_factor = subpixels * scale
-
-    size_scale = tuple((size * scale_factor).round().astype(int))
+    size_scale = tuple((size * subpixels * scale).round().astype(int))
 
     size_out = tuple((size * scale).round().astype(int))
 
-    line_width = line_width * scale_factor
+    line_width = line_width * subpixels
 
     img = Image.new(mode="RGB", size=size_scale, color=background)
     draw = ImageDraw.Draw(img)
