@@ -56,7 +56,7 @@ def draw_route(
     last_point = None
     last_width = None
 
-    def draw_line_to_point(p, f=None, cap=True):
+    def draw_line_to_point(p, f, cap=True):
         nonlocal last_point, last_width
 
         p = tuple((p * subpixels * scale))
