@@ -141,3 +141,43 @@ def draw_cmyk_routes(
         img = ImageChops.subtract(img, channel_img)
 
     return img
+
+
+def draw_rgb_routes(
+        rgb_points,
+        rgb_factors,
+        size=None,
+        line_width=2,
+        minimum_line_width_factor=0.05,
+        scale=1,
+        closed=True,
+        subpixels=8
+):
+    size = np.array(size)
+
+    size_out = tuple((size * scale).round().astype(int))
+
+    add_colors = (
+        (255, 0, 0),
+        (0, 255, 0),
+        (0, 0, 255)
+    )
+
+    img = Image.new(size=size_out, mode="RGB", color=(0, 0, 0))
+    for idx, channel_points in enumerate(rgb_points):
+        channel_img = draw_route(
+            points=channel_points,
+            factors=rgb_factors[idx],
+            size=size,
+            line_width=line_width,
+            minimum_line_width_factor=minimum_line_width_factor,
+            scale=scale,
+            closed=closed,
+            background=(0, 0, 0),
+            foreground=add_colors[idx],
+            subpixels=subpixels
+        ).convert("RGB")
+
+        img = ImageChops.add(img, channel_img)
+
+    return img
