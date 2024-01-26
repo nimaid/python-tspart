@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def split_cmyk(rgb_array, threshhold=1):
+def split_cmyk(rgb_array, invert=False, threshhold=1):
     data = rgb_array.astype(float) / 255
     threshold = threshhold / 255
 
@@ -15,15 +15,23 @@ def split_cmyk(rgb_array, threshhold=1):
 
     result = 1 - np.array([c, m, y, k])
 
-    return tuple([(_ * 255).round().astype(int) for _ in result])
+    result = tuple([(_ * 255).round().astype(int) for _ in result])
+    if invert:
+        result = invert_array_multi(result)
+
+    return result
 
 
-def split_rgb(rgb_array):
+def split_rgb(rgb_array, invert=False):
     r = rgb_array[:, :, 0]
     g = rgb_array[:, :, 1]
     b = rgb_array[:, :, 2]
 
-    return r, g, b
+    result = (r, g, b)
+    if invert:
+        result = invert_array_multi(result)
+
+    return result
 
 
 def rgb_to_gray(rgb):
@@ -32,8 +40,12 @@ def rgb_to_gray(rgb):
     return int(round((0.299 * r) + (0.587 * g) + (0.114 * b)))
 
 
-def rgb_array_to_grayscale(rgb_array):
-    return np.array([[rgb_to_gray(__) for __ in _] for _ in rgb_array])
+def rgb_array_to_grayscale(rgb_array, invert=False):
+    result = np.array([[rgb_to_gray(__) for __ in _] for _ in rgb_array])
+    if invert:
+        result = invert_array_multi(result)
+
+    return result
 
 
 def invert_array(grayscale_array):
