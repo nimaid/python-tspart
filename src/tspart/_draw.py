@@ -34,6 +34,7 @@ def draw_route(
         size,
         line_width=2,
         minimum_line_width_factor=0.05,
+        invert_line_width_factors=False,
         scale=1,
         closed=True,
         background=(255, 255, 255),
@@ -61,7 +62,10 @@ def draw_route(
 
         p = tuple((p * subpixels * scale))
 
-        f_p = ((1 - minimum_line_width_factor) * (1 - f)) + minimum_line_width_factor
+        if invert_line_width_factors:
+            f = (1 - f)
+
+        f_p = ((1 - minimum_line_width_factor) * f) + minimum_line_width_factor
         w = f_p * line_width
 
         r = w / 2
@@ -129,6 +133,7 @@ def draw_cmyk_routes(
             size=size,
             line_width=line_width,
             minimum_line_width_factor=minimum_line_width_factor,
+            invert_line_width_factors=True,
             scale=scale,
             closed=closed,
             background=(0, 0, 0),
@@ -170,6 +175,7 @@ def draw_rgb_routes(
             size=size,
             line_width=line_width,
             minimum_line_width_factor=minimum_line_width_factor,
+            invert_line_width_factors=False,
             scale=scale,
             closed=closed,
             background=(0, 0, 0),
