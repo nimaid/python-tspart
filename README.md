@@ -40,3 +40,9 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
     <br>
     <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/bowser_25000.png" width="800px" alt="Bowser The Fearless"/>
 </p>
+
+# References
+- [Original Stippling Code](https://github.com/ReScience-Archives/Rougier-2017) by Nicolas Rougier
+- [Google OR-Tools TSP Guide](https://developers.google.com/optimization/routing/tsp)
+- [Neos Server API Reference](https://neos-server.org/neos/xml-rpc.html)
+- [Neos Server Job Queue](https://neos-server.org/neos/cgi-bin/nph-neos-solver.cgi?admin=queue)
