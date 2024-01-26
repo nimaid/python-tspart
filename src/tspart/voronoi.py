@@ -305,17 +305,17 @@ def stipple_image(grayscale_array, points=5000, iterations=50, logging=True, blu
     density_Q = density_P.cumsum(axis=1)
 
     # Initialization
-    points = initialization(points, density)
+    stippled = initialization(points, density)
 
     if logging:
         iter = EtaBar(range(iterations))
     else:
         iter = range(iterations)
 
-    for i in iter:
-        regions, points = centroids(points, density, density_P, density_Q)
+    for _ in iter:
+        regions, stippled = centroids(stippled, density, density_P, density_Q)
 
-    return points / zoom
+    return stippled / zoom
 
 
 def stipple_image_multi(grayscale_arrays, points=5000, iterations=50, logging=True, blur_sigma=3):
@@ -327,6 +327,67 @@ def stipple_image_multi(grayscale_arrays, points=5000, iterations=50, logging=Tr
         stippled = stipple_image(
             grayscale_array=grayscale_array,
             points=points,
+            iterations=iterations,
+            logging=logging,
+            blur_sigma=blur_sigma
+        )
+
+        result.append(stippled)
+
+    return result
+
+
+def batched_stipple_image(grayscale_array, points=5000, iterations=50, batch_size=5000, logging=True, blur_sigma=3):
+    if points > batch_size:
+        num_batches = int(points / batch_size)
+
+        if num_batches * batch_size < points:
+            num_batches += 1
+    else:
+        num_batches = 1
+
+    if logging:
+        iter = EtaBar(range(num_batches))
+    else:
+        iter = range(iterations)
+
+    stippled = np.array([])
+    for batch_num in iter:
+        if batch_num == num_batches - 1:
+            batch_points = points - (num_batches * batch_size)
+        else:
+            batch_points = batch_size
+
+        batch_stippled = stipple_image(
+            grayscale_array=grayscale_array,
+            points=batch_points,
+            iterations=iterations,
+            logging=logging,
+            blur_sigma=blur_sigma
+        )
+
+        stippled = np.append(stippled, batch_stippled)
+
+    return stippled
+
+
+def batched_stipple_image_multi(
+        grayscale_arrays,
+        points=5000,
+        iterations=50,
+        batch_size=5000,
+        logging=True,
+        blur_sigma=3
+):
+    result = []
+    for idx, grayscale_array in enumerate(grayscale_arrays):
+        if logging:
+            print(f"Stippling image {idx + 1}/{len(grayscale_arrays)}", file=sys.stderr)
+
+        stippled = batched_stipple_image(
+            grayscale_array=grayscale_array,
+            points=points,
+            batch_size=batch_size,
             iterations=iterations,
             logging=logging,
             blur_sigma=blur_sigma
