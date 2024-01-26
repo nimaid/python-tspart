@@ -70,21 +70,26 @@ def circle_point(radius, angle, offset=(0, 0)):
     return point + offset
 
 
-def factors_from_image(grayscale_array, points, blur_sigma=3):
+def size_factor(grayscale_array, point):
     width, height = image_array_size(grayscale_array)
 
+    y, x = np.array(point).round().astype(int)
+
+    x = min(width - 1, x)
+    y = min(height - 1, y)
+
+    px = grayscale_array[x][y]
+    return 1 - (px / 255)
+
+
+def factors_from_image(grayscale_array, points, blur_sigma=3):
     if blur_sigma > 0:
         grayscale_array = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
 
     factors = []
     for point in points:
-        y, x = np.array(point).round().astype(int)
-
-        x = min(width - 1, x)
-        y = min(height - 1, y)
-
-        px = grayscale_array[x][y]
-        factors.append(1 - (px / 255))
+        factor = size_factor(grayscale_array, point)
+        factors.append(factor)
 
     return np.array(factors)
 
@@ -101,3 +106,27 @@ def factors_from_image_multi(grayscale_arrays, points_list, blur_sigma=3):
         factors_list.append(factors)
 
     return factors_list
+
+
+def filter_white_points(grayscale_array, points):
+    result = []
+    for point in points:
+        factor = size_factor(grayscale_array, point)
+
+        if factor > 1e-28:
+            result.append(point)
+
+    return result
+
+
+def filter_white_points_multi(grayscale_arrays, points_list):
+    results = []
+    for grayscale_array, points in zip(grayscale_arrays, points_list):
+        points = filter_white_points(
+            grayscale_array=grayscale_array,
+            points=points,
+        )
+
+        results.append(points)
+
+    return results

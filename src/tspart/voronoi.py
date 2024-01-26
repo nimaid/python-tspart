@@ -291,11 +291,7 @@ def initialization(n, D):
     return np.array(samples)
 
 
-def stipple_image(grayscale_array, points=5000, iterations=50, logging=True, blur_sigma=3):
-    # Pre-blur to remove noise
-    if blur_sigma > 0:
-        grayscale_array = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
-
+def stipple_image(grayscale_array, points=5000, iterations=50, logging=True):
     # We want (approximately) 500 pixels per voronoi region
     zoom = (points * 500) / (grayscale_array.shape[0] * grayscale_array.shape[1])
     density = scipy.ndimage.zoom(grayscale_array, zoom, order=0)
