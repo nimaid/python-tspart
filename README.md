@@ -25,5 +25,18 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
 <p align="center"><a href="https://tspart.readthedocs.io/en/latest/index.html"><img src="https://brand-guidelines.readthedocs.org/_images/logo-wordmark-vertical-dark.png" width="300px" alt="tspart on Read the Docs"></a></p>
 
 # Gallery
-<p align="center"><b>Bowser The Fearless</b></p>
-<p align="center"><img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/bowser_25000.png" width="800px" alt="Example image"/></p>
+<p align="center">
+    <b>Bliss</b>
+    <br>
+    CMYK, 25000 Points
+    <br>
+    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/bliss_25000.png" width="800px" alt="Bliss"/>
+</p>
+
+<p align="center">
+    <b>Bowser The Fearless</b>
+    <br>
+    CMYK, 25000 Points
+    <br>
+    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/bowser_25000.png" width="800px" alt="Bowser The Fearless"/>
+</p>
