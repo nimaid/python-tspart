@@ -82,7 +82,7 @@ def size_factor(grayscale_array, point):
     return 1 - (px / 255)
 
 
-def factors_from_image(grayscale_array, points, blur_sigma=3):
+def factors_from_image(grayscale_array, points, blur_sigma=1):
     if blur_sigma > 0:
         grayscale_array = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
 
@@ -94,7 +94,7 @@ def factors_from_image(grayscale_array, points, blur_sigma=3):
     return np.array(factors)
 
 
-def factors_from_image_multi(grayscale_arrays, points_list, blur_sigma=3):
+def factors_from_image_multi(grayscale_arrays, points_list, blur_sigma=1):
     factors_list = []
     for grayscale_array, points in zip(grayscale_arrays, points_list):
         factors = factors_from_image(
@@ -108,23 +108,24 @@ def factors_from_image_multi(grayscale_arrays, points_list, blur_sigma=3):
     return factors_list
 
 
-def filter_white_points(grayscale_array, points):
+def filter_white_points(grayscale_array, points, threshold=0.001):
     result = []
     for point in points:
         factor = size_factor(grayscale_array, point)
 
-        if factor > 1e-28:
+        if factor > threshold:
             result.append(point)
 
     return result
 
 
-def filter_white_points_multi(grayscale_arrays, points_list):
+def filter_white_points_multi(grayscale_arrays, points_list, threshold=0.001):
     results = []
     for grayscale_array, points in zip(grayscale_arrays, points_list):
         points = filter_white_points(
             grayscale_array=grayscale_array,
             points=points,
+            threshold=threshold
         )
 
         results.append(points)
