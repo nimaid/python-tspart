@@ -70,24 +70,26 @@ def circle_point(radius, angle, offset=(0, 0)):
     return point + offset
 
 
-def factors_from_image(grayscale_array, points, blur_sigma=5):
-    blurred_img = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
+def factors_from_image(grayscale_array, points, blur_sigma=3):
+    if blur_sigma > 0:
+        grayscale_array = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
 
     factors = []
     for point in points:
         x, y = tuple(np.array(point).round().astype(int))
 
-        factors.append(blurred_img[x][y] / 255)
+        factors.append(grayscale_array[x][y] / 255)
 
     return np.array(factors)
 
 
-def factors_from_image_multi(grayscale_arrays, points_list):
+def factors_from_image_multi(grayscale_arrays, points_list, blur_sigma=3):
     factors_list = []
     for grayscale_array, points in zip(grayscale_arrays, points_list):
         factors = factors_from_image(
             grayscale_array=grayscale_array,
-            points=points
+            points=points,
+            blur_sigma=blur_sigma
         )
 
         factors_list.append(factors)

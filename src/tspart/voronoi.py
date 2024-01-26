@@ -293,7 +293,8 @@ def initialization(n, D):
 
 def stipple_image(grayscale_array, points=5000, iterations=50, logging=True, blur_sigma=3):
     # Pre-blur to remove noise
-    grayscale_array = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
+    if blur_sigma > 0:
+        grayscale_array = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
 
     # We want (approximately) 500 pixels per voronoi region
     zoom = (points * 500) / (grayscale_array.shape[0] * grayscale_array.shape[1])
@@ -317,7 +318,7 @@ def stipple_image(grayscale_array, points=5000, iterations=50, logging=True, blu
     return points / zoom
 
 
-def stipple_image_multi(grayscale_arrays, points=5000, iterations=50, logging=True):
+def stipple_image_multi(grayscale_arrays, points=5000, iterations=50, logging=True, blur_sigma=3):
     result = []
     for idx, grayscale_array in enumerate(grayscale_arrays):
         if logging:
@@ -327,7 +328,8 @@ def stipple_image_multi(grayscale_arrays, points=5000, iterations=50, logging=Tr
             grayscale_array=grayscale_array,
             points=points,
             iterations=iterations,
-            logging=logging
+            logging=logging,
+            blur_sigma=blur_sigma
         )
 
         result.append(stippled)
