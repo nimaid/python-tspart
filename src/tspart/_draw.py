@@ -34,7 +34,6 @@ def draw_route(
         size,
         line_width=2,
         minimum_line_width_factor=0.05,
-        invert_line_width_factors=True,
         scale=1,
         closed=True,
         background=(255, 255, 255),
@@ -61,9 +60,6 @@ def draw_route(
         nonlocal last_point, last_width
 
         p = tuple((p * subpixels * scale))
-
-        if invert_line_width_factors:
-            f = (1 - f)
 
         f_p = ((1 - minimum_line_width_factor) * f) + minimum_line_width_factor
         w = f_p * line_width

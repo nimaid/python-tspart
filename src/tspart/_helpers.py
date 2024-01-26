@@ -84,7 +84,7 @@ def factors_from_image(grayscale_array, points, blur_sigma=3):
         y = min(height - 1, y)
 
         px = grayscale_array[x][y]
-        factors.append(px / 255)
+        factors.append(1 - (px / 255))
 
     return np.array(factors)
 
