@@ -61,11 +61,9 @@ def draw_route(
 
         p = tuple((p * subpixels * scale))
 
-        if f is None:
-            w = line_width
-        else:
-            f_p = ((1 - minimum_line_width_factor) * f) + minimum_line_width_factor
-            w = f_p * line_width
+        f_p = ((1 - minimum_line_width_factor) * f) + minimum_line_width_factor
+        w = f_p * line_width
+
         r = w / 2
 
         # Draw dot

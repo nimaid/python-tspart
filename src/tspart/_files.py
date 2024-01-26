@@ -93,8 +93,22 @@ def load_tsplib(filename):
     return decode_tsplib(text)
 
 
+def save_cyc_tour(filename, tour):
+    with open(filename, "w") as f:
+        for idx in tour:
+            f.write(f"{idx}\n")
+
+
 def load_cyc_tour(filename):
     with open(filename, "r") as f:
         tour = [int(_.strip()) for _ in f.readlines() if _.strip() != ""]
 
     return tour
+
+
+def save_jobs(filename, jobs):
+    save_json(filename, {"jobs": jobs})
+
+
+def load_jobs(filename):
+    return load_json(filename)["jobs"]

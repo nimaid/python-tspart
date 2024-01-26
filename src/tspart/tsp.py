@@ -8,7 +8,7 @@ from tspart._helpers import map_points_to_tour as _map_points_to_tour
 
 
 # See https://developers.google.com/optimization/routing/tsp
-def heuristic_solve(points, time_limit_minutes=1, symmetric=True, logging=True, verbose=False):
+def heuristic_solve(points, time_limit_minutes=60, symmetric=True, logging=True, verbose=False):
     distance_matrix = scipy.spatial.distance.cdist(points, points).round().astype(int)
     num_points = len(points)
 
@@ -68,7 +68,7 @@ def heuristic_solve(points, time_limit_minutes=1, symmetric=True, logging=True, 
         return None
 
 
-def heuristic_solves(points_list, time_limit_minutes=1, symmetric=False, logging=True, verbose=False):
+def heuristic_solves(points_list, time_limit_minutes=60, symmetric=True, logging=True, verbose=False):
     result = []
     for idx, points in enumerate(points_list):
         print(f"Solving image {idx + 1}/{len(points_list)}", file=sys.stderr)
