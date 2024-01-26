@@ -24,7 +24,6 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
 # Full Documentation
 <p align="center"><a href="https://tspart.readthedocs.io/en/latest/index.html"><img src="https://brand-guidelines.readthedocs.org/_images/logo-wordmark-vertical-dark.png" width="300px" alt="tspart on Read the Docs"></a></p>
 
-
 # Gallery
 <p align="center"><font size="5"><b>Bowser The Fearless</b></font></p>
 <p align="center"><img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/bowser_25000.png" width="800px" alt="Example image"/></p>
