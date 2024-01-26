@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.spatial
+import scipy.ndimage
 
 
 def get_bounding_corners(points):
@@ -69,12 +70,14 @@ def circle_point(radius, angle, offset=(0, 0)):
     return point + offset
 
 
-def factors_from_image(grayscale_array, points):
+def factors_from_image(grayscale_array, points, blur_sigma=5):
+    blurred_img = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
+
     factors = []
     for point in points:
         x, y = tuple(np.array(point).round().astype(int))
 
-        factors.append(grayscale_array[x][y] / 255)
+        factors.append(blurred_img[x][y] / 255)
 
     return np.array(factors)
 

@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image, ImageDraw, ImageChops
 
-from tspart._helpers import get_bounding_corners, image_array_size, line_angle, circle_point
+from tspart._helpers import line_angle, circle_point
 
 
 def draw_multi_thickness_line(draw, xy, widths, fill=None):
@@ -124,17 +124,17 @@ def draw_cmyk_routes(
     )
 
     img = Image.new(size=size_out, mode="RGB", color=(255, 255, 255))
-    for idx, channel_points in enumerate(cmyk_points):
+    for points, factor, color in zip(cmyk_points, cmyk_factors, sub_colors):
         channel_img = draw_route(
-            points=channel_points,
-            factors=cmyk_factors[idx],
+            points=points,
+            factors=factor,
             size=size,
             line_width=line_width,
             minimum_line_width_factor=minimum_line_width_factor,
             scale=scale,
             closed=closed,
             background=(0, 0, 0),
-            foreground=sub_colors[idx],
+            foreground=color,
             subpixels=subpixels
         ).convert("RGB")
 
@@ -157,24 +157,25 @@ def draw_rgb_routes(
 
     size_out = tuple((size * scale).round().astype(int))
 
+    # TODO: Why are the channels mixed up?
     add_colors = (
+        (0, 0, 255),
         (255, 0, 0),
         (0, 255, 0),
-        (0, 0, 255)
     )
 
     img = Image.new(size=size_out, mode="RGB", color=(0, 0, 0))
-    for idx, channel_points in enumerate(rgb_points):
+    for points, factor, color in zip(rgb_points, rgb_factors, add_colors):
         channel_img = draw_route(
-            points=channel_points,
-            factors=rgb_factors[idx],
+            points=points,
+            factors=factor,
             size=size,
             line_width=line_width,
             minimum_line_width_factor=minimum_line_width_factor,
             scale=scale,
             closed=closed,
             background=(0, 0, 0),
-            foreground=add_colors[idx],
+            foreground=color,
             subpixels=subpixels
         ).convert("RGB")
 
