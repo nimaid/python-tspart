@@ -71,7 +71,7 @@ def circle_point(radius, angle, offset=(0, 0)):
 
 
 def factors_from_image(grayscale_array, points, blur_sigma=3):
-    width, height = image_array_size(grayscale_array)
+    height, width = image_array_size(grayscale_array)
 
     if blur_sigma > 0:
         grayscale_array = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
