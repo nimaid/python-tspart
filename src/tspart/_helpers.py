@@ -71,12 +71,17 @@ def circle_point(radius, angle, offset=(0, 0)):
 
 
 def factors_from_image(grayscale_array, points, blur_sigma=3):
+    width, height = image_array_size(grayscale_array)
+
     if blur_sigma > 0:
         grayscale_array = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
 
     factors = []
     for point in points:
-        x, y = tuple(np.array(point).round().astype(int))
+        x, y = np.array(point).round().astype(int)
+
+        x = min(width - 1, x)
+        y = min(height - 1, y)
 
         factors.append(grayscale_array[x][y] / 255)
 
