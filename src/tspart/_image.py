@@ -34,3 +34,11 @@ def rgb_to_gray(rgb):
 
 def rgb_array_to_grayscale(rgb_array):
     return np.array([[rgb_to_gray(__) for __ in _] for _ in rgb_array])
+
+
+def invert_array(grayscale_array):
+    return 255 - grayscale_array
+
+
+def invert_array_multi(grayscale_arrays):
+    return [invert_array(_) for _ in grayscale_arrays]
