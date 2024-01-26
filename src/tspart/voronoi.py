@@ -346,13 +346,11 @@ def batched_stipple_image(grayscale_array, points=5000, iterations=50, batch_siz
     else:
         num_batches = 1
 
-    if logging:
-        iter = EtaBar(range(num_batches))
-    else:
-        iter = range(iterations)
-
     stippled = np.array([])
-    for batch_num in iter:
+    for batch_num in range(num_batches):
+        if logging:
+            print(f"Batch {batch_num+1}/{num_batches}")
+
         if batch_num == num_batches - 1:
             batch_points = points - (num_batches * batch_size)
         else:
