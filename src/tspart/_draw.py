@@ -61,7 +61,7 @@ def draw_route(
 
         p = tuple((p * subpixels * scale))
 
-        f_p = ((1 - minimum_line_width_factor) * f) + minimum_line_width_factor
+        f_p = ((1 - minimum_line_width_factor) * (1 - f)) + minimum_line_width_factor
         w = f_p * line_width
 
         r = w / 2
