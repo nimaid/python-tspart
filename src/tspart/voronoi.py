@@ -337,7 +337,7 @@ def stipple_image_multi(grayscale_arrays, points=5000, iterations=50, logging=Tr
     return result
 
 
-def batched_stipple_image(grayscale_array, points=5000, iterations=50, batch_size=5000, logging=True, blur_sigma=3):
+def batched_stipple_image(grayscale_array, points=5000, iterations=50, batch_size=10000, logging=True, blur_sigma=3):
     if points > batch_size:
         num_batches = int(points / batch_size)
 
@@ -373,7 +373,7 @@ def batched_stipple_image_multi(
         grayscale_arrays,
         points=5000,
         iterations=50,
-        batch_size=5000,
+        batch_size=10000,
         logging=True,
         blur_sigma=3
 ):
