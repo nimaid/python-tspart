@@ -349,7 +349,7 @@ def batched_stipple_image(grayscale_array, points=5000, iterations=50, batch_siz
     stippled = np.array([])
     for batch_num in range(num_batches):
         if logging:
-            print(f"Batch {batch_num+1}/{num_batches}")
+            print(f"Batch {batch_num+1}/{num_batches}", file=sys.stderr)
 
         if batch_num == num_batches - 1:
             batch_points = points - (num_batches * batch_size)
