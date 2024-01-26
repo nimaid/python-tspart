@@ -49,6 +49,15 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
     <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/ella_35000.png" width="800px" alt="Self Portrait"/>
 </p>
 
+<p align="center">
+    <b>'Baboon' Standard Test Image</b>
+    <br>
+    CMYK, 500 Points
+    <br>
+    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon.png" width="300px" alt="'Baboon' Standard Test Image (Original)"/>
+    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500.png" width="300px" alt="'Baboon' Standard Test Image (TSP)"/>
+</p>
+
 # References
 - [Original Stippling Code](https://github.com/ReScience-Archives/Rougier-2017) by [Nicolas Rougier](https://github.com/rougier)
 - [Google OR-Tools TSP Guide](https://developers.google.com/optimization/routing/tsp)
