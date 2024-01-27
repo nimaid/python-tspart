@@ -70,16 +70,14 @@ def circle_point(radius, angle, offset=(0, 0)):
     return point + offset
 
 
+def get_point_value(grayscale_array, point):
+    y, x = np.floor(np.array(point)).astype(int)
+
+    return grayscale_array[x][y]
+
+
 def size_factor(grayscale_array, point):
-    width, height = image_array_size(grayscale_array)
-
-    y, x = np.array(point).round().astype(int)
-
-    x = min(width - 1, x)
-    y = min(height - 1, y)
-
-    px = grayscale_array[x][y]
-    return 1 - (px / 255)
+    return 1 - (get_point_value(grayscale_array, point) / 255)
 
 
 def factors_from_image(grayscale_array, points, blur_sigma=1):
@@ -108,18 +106,16 @@ def factors_from_image_multi(grayscale_arrays, points_list, blur_sigma=1):
     return factors_list
 
 
-def filter_white_points(grayscale_array, points, threshold=0.001):
+def filter_white_points(grayscale_array, points, threshold=1):
     result = []
     for point in points:
-        factor = size_factor(grayscale_array, point)
-
-        if factor > threshold:
+        if get_point_value(grayscale_array, point) >= threshold:
             result.append(point)
 
     return result
 
 
-def filter_white_points_multi(grayscale_arrays, points_list, threshold=0.001):
+def filter_white_points_multi(grayscale_arrays, points_list, threshold=1):
     results = []
     for grayscale_array, points in zip(grayscale_arrays, points_list):
         points = filter_white_points(
