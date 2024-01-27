@@ -42,10 +42,10 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
     </tr>
     <tr style="border: none !important;">
         <td align="center" style="border: none !important;">
-            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon.png" width="150px" alt="'Baboon' Standard Test Image (Original)"/>
+            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon.png" width="300px" alt="'Baboon' Standard Test Image (Original)"/>
         </td>
         <td align="center" style="border: none !important;">
-            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500.png" width="150px" alt="'Baboon' Standard Test Image (CMYK)"/>
+            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500.png" width="300px" alt="'Baboon' Standard Test Image (CMYK)"/>
         </td>
     </tr>
     <tr style="border: none !important;">
@@ -58,10 +58,10 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
     </tr>
     <tr style="border: none !important;">
         <td align="center" style="border: none !important;">
-            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_rgb.png" width="150px" alt="'Baboon' Standard Test Image (RGB)"/>
+            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_rgb.png" width="300px" alt="'Baboon' Standard Test Image (RGB)"/>
         </td>
         <td align="center" style="border: none !important;">
-            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_gray.png" width="150px" alt="'Baboon' Standard Test Image (Grayscale)"/>
+            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_gray.png" width="300px" alt="'Baboon' Standard Test Image (Grayscale)"/>
         </td>
     </tr>
 </table>
