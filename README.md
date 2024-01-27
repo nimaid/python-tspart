@@ -14,7 +14,7 @@
     <a href="https://paypal.me/EllaJameson"><img src="https://img.shields.io/badge/PayPal-donate?logo=paypal&logoColor=white&label=donate&color=purple" alt="Donate" /></a>
 </div>
 
-<p align="center"><img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/bliss_25000.png" width="800px" alt="Example image"/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/bliss_25000_CMYK.png" width="800px" alt="Example image"/></p>
 
 # Usage
 See [The Jupyter notebook](https://github.com/nimaid/python-tspart/blob/main/tspart.ipynb) to learn how to use the library.
@@ -45,7 +45,7 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
             <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon.png" width="300px" alt="'Baboon' Standard Test Image (Original)"/>
         </td>
         <td align="center" style="border: none !important;">
-            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500.png" width="300px" alt="'Baboon' Standard Test Image (CMYK)"/>
+            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_CMYK.png" width="300px" alt="'Baboon' Standard Test Image (CMYK)"/>
         </td>
     </tr>
     <tr style="border: none !important;">
@@ -58,10 +58,10 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
     </tr>
     <tr style="border: none !important;">
         <td align="center" style="border: none !important;">
-            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_rgb.png" width="300px" alt="'Baboon' Standard Test Image (RGB)"/>
+            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_RGB.png" width="300px" alt="'Baboon' Standard Test Image (RGB)"/>
         </td>
         <td align="center" style="border: none !important;">
-            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_gray.png" width="300px" alt="'Baboon' Standard Test Image (Grayscale)"/>
+            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_L.png" width="300px" alt="'Baboon' Standard Test Image (Grayscale)"/>
         </td>
     </tr>
 </table>
@@ -74,7 +74,7 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
     <br>
     25000 Points
     <br>
-    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/bliss_25000.png" width="800px" alt="Bliss"/>
+    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/bliss_25000_CMYK.png" width="800px" alt="Bliss"/>
 </p>
 
 <p align="center">
@@ -84,7 +84,7 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
     <br>
     25000 Points
     <br>
-    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/bowser_25000.png" width="800px" alt="Bowser The Fearless"/>
+    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/bowser_25000_CMYK.png" width="800px" alt="Bowser The Fearless"/>
 </p>
 
 <p align="center">
@@ -94,7 +94,7 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
     <br>
     35000 Points
     <br>
-    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/ella_35000.png" width="800px" alt="Self Portrait"/>
+    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/ella_35000_CMYK.png" width="800px" alt="Self Portrait"/>
 </p>
 
 <p align="center">
@@ -104,7 +104,7 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
     <br>
     35000 Points
     <br>
-    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/ella_circle_35000.png" width="800px" alt="Self Portrait (Circular)"/>
+    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/ella_circle_35000_CMYK.png" width="800px" alt="Self Portrait (Circular)"/>
 </p>
 
 # References
