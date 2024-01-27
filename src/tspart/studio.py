@@ -254,6 +254,8 @@ class TspStudio:
         if self.points is None:
             raise ValueError("Points not initialized")
 
+        self.cancel_online_solves()
+
         results = _tsp.heuristic_solves(
             points_list=self.points,
             time_limit_minutes=time_limit_minutes,
