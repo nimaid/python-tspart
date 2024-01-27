@@ -9,6 +9,8 @@ from PIL import Image
 from tspart._image import split_cmyk as _split_cmyk
 from tspart._image import split_rgb as _split_rgb
 from tspart._image import rgb_to_grayscale as _rgb_to_grayscale
+from tspart._image import base64_to_image as _base64_to_image
+from tspart._image import image_to_base64 as _image_to_base64
 from tspart._draw import draw_cmyk_routes as _draw_cmyk_routes
 from tspart._draw import draw_rgb_routes as _draw_rgb_routes
 from tspart._draw import draw_route as _draw_route
@@ -17,12 +19,16 @@ from tspart._helpers import image_to_array as _image_to_array
 from tspart._helpers import image_array_size as _image_array_size
 from tspart._helpers import filter_white_points_multi as _filter_white_points_multi
 from tspart._helpers import factors_from_image_multi as _factors_from_image_multi
+from tspart._helpers import ndarray_to_array_2d as _ndarray_to_array_2d
+from tspart._helpers import array_to_ndarray_2d as _array_to_ndarray_2d
+from tspart._files import save_json as _save_json
+from tspart._files import load_json as _load_json
 from tspart import voronoi as _voronoi
 from tspart import neos as _neos
 from tspart import tsp as _tsp
 
 
-class TspStudioMode(Enum):
+class ColorMode(Enum):
     CMYK = "CMYK"
     RGB = "RGB"
     GRAYSCALE = "L"
@@ -31,7 +37,7 @@ class TspStudioMode(Enum):
 class TspStudio:
     def __init__(
             self,
-            mode: TspStudioMode,
+            mode: ColorMode,
             image: Image,
             num_points: int = 5000,
             line_width: float = 2,
@@ -53,15 +59,15 @@ class TspStudio:
         self.factors = None
 
     @property
-    def mode(self) -> TspStudioMode:
+    def mode(self) -> ColorMode:
         return self._mode
 
     @mode.setter
-    def mode(self, value: TspStudioMode | str):
-        if isinstance(value, TspStudioMode):
+    def mode(self, value: ColorMode | str):
+        if isinstance(value, ColorMode):
             self._mode = value
         else:
-            self._mode = TspStudioMode(value)
+            self._mode = ColorMode(value)
 
     @property
     def image(self) -> Image:
@@ -74,11 +80,11 @@ class TspStudio:
         self.size = _image_array_size(self._image)
 
         match self.mode:
-            case TspStudioMode.CMYK:
+            case ColorMode.CMYK:
                 self.channels = _split_cmyk(self._image, invert=False)
-            case TspStudioMode.RGB:
+            case ColorMode.RGB:
                 self.channels = _split_rgb(self._image, invert=True)
-            case TspStudioMode.GRAYSCALE:
+            case ColorMode.GRAYSCALE:
                 self.channels = [_rgb_to_grayscale(self._image, invert=False)]
 
     @property
@@ -87,7 +93,7 @@ class TspStudio:
 
     @num_points.setter
     def num_points(self, value: int):
-        self._num_points = min(1, value)
+        self._num_points = max(1, value)
 
         self.points = None
         self.is_routed = False
@@ -99,7 +105,7 @@ class TspStudio:
 
     @line_width.setter
     def line_width(self, value: float | int):
-        self._line_width = min(0, value)
+        self._line_width = max(0, value)
 
     @property
     def white_threshold(self) -> int:
@@ -107,7 +113,7 @@ class TspStudio:
 
     @white_threshold.setter
     def white_threshold(self, value: int):
-        self._white_threshold = min(1, value)
+        self._white_threshold = max(1, value)
 
     @property
     def points(self) -> Sequence[Sequence[float | Sequence[float]]]:
@@ -156,22 +162,26 @@ class TspStudio:
             logging=logging
         )
 
-    def remove_white_points(self, threshold=1, blur_sigma=1):
+        if self.white_threshold > 0:
+            self.points = _filter_white_points_multi(
+                grayscale_arrays=self.channels,
+                points_list=self.points,
+                threshold=self.white_threshold
+            )
+
+    def compute_factors(self):
         if self.points is None:
             raise ValueError("Points not initialized")
-
-        self.points = _filter_white_points_multi(
+        self.factors = _factors_from_image_multi(
             grayscale_arrays=self.channels,
-            points_list=self.points,
-            threshold=threshold,
-            blur_sigma=blur_sigma
+            points_list=self.points
         )
 
-    def setup_online_solve(self):
+    def setup_online_solves(self):
         if self.neos is None:
             self.neos = _neos.get_client()
 
-    def submit_online_solve(self, email):
+    def submit_online_solves(self, email):
         if self.points is None:
             raise ValueError("Points not initialized")
 
@@ -184,7 +194,7 @@ class TspStudio:
             points_list=self.points
         )
 
-    def cancel_online_solve(self):
+    def cancel_online_solves(self):
         self.setup_online_solve()
 
         if self.jobs is not None:
@@ -195,7 +205,7 @@ class TspStudio:
 
         self.jobs = None
 
-    def get_online_solve(self) -> bool:
+    def get_online_solves(self) -> bool:
         if self.points is None:
             raise ValueError("Points not initialized")
         if self.jobs is None:
@@ -209,16 +219,15 @@ class TspStudio:
 
         if all([_ is not None for _ in results]):
             self.points = results
-            self.factors = _factors_from_image_multi(
-                grayscale_arrays=self.channels,
-                points_list=self.points
-            )
+            self.compute_factors()
+
             self.is_routed = True
+            self.jobs = None
             return True
 
         return False
 
-    def get_online_solve_blocking(self, delay_minutes=0.25, logging=True):
+    def get_online_solves_blocking(self, delay_minutes=0.25, logging=True):
         if self.points is None:
             raise ValueError("Points not initialized")
         if self.jobs is None:
@@ -233,17 +242,13 @@ class TspStudio:
         )
 
         self.points = results
-        self.factors = _factors_from_image_multi(
-            grayscale_arrays=self.channels,
-            points_list=self.points
-        )
+        self.compute_factors()
         self.is_routed = True
+        self.jobs = None
 
     def offline_solves(self, time_limit_minutes=60, symmetric=True, logging=True, verbose=False):
         if self.points is None:
             raise ValueError("Points not initialized")
-        if self.jobs is None:
-            raise ValueError("Jobs not initialized")
 
         results = _tsp.heuristic_solves(
             points_list=self.points,
@@ -255,10 +260,7 @@ class TspStudio:
 
         if all([_ is not None for _ in results]):
             self.points = results
-            self.factors = _factors_from_image_multi(
-                grayscale_arrays=self.channels,
-                points_list=self.points
-            )
+            self.compute_factors()
             self.is_routed = True
             return True
 
@@ -273,7 +275,7 @@ class TspStudio:
             raise ValueError("Not routed yet")
 
         match self.mode:
-            case TspStudioMode.CMYK:
+            case ColorMode.CMYK:
                 return _draw_cmyk_routes(
                     cmyk_points=self.points,
                     cmyk_factors=self.factors,
@@ -283,7 +285,7 @@ class TspStudio:
                     closed=closed,
                     subpixels=subpixels
                 )
-            case TspStudioMode.RGB:
+            case ColorMode.RGB:
                 return _draw_rgb_routes(
                     rgb_points=self.points,
                     rgb_factors=self.factors,
@@ -293,7 +295,7 @@ class TspStudio:
                     closed=closed,
                     subpixels=subpixels
                 )
-            case TspStudioMode.GRAYSCALE:
+            case ColorMode.GRAYSCALE:
                 return _draw_route(
                     points=self.points[0],
                     factors=self.factors[0],
@@ -303,3 +305,34 @@ class TspStudio:
                     closed=closed,
                     subpixels=subpixels
                 )
+
+
+def load(filename) -> TspStudio:
+    obj = _load_json(filename)
+
+    obj["image"] = _base64_to_image(obj["image"])
+    obj["mode"] = ColorMode(obj["mode"])
+    if obj["points"] is not None:
+        obj["points"] = _array_to_ndarray_2d(obj["points"])
+
+    return TspStudio(
+            mode=obj["mode"],
+            image=obj["image"],
+            num_points=obj["num_points"],
+            line_width=obj["line_width"],
+            white_threshold=obj["white_threshold"],
+            points=obj["points"],
+            is_routed=obj["is_routed"],
+            jobs=obj["jobs"]
+    )
+
+
+def save(filename, studio, indent=2):
+    obj = studio.data
+
+    obj["image"] = _image_to_base64(obj["image"])
+    obj["mode"] = obj["mode"].value
+    if obj["points"] is not None:
+        obj["points"] = _ndarray_to_array_2d(obj["points"])
+
+    _save_json(filename, obj, indent=indent)

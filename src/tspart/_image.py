@@ -1,4 +1,8 @@
+import base64
+from io import BytesIO
+
 import numpy as np
+from PIL import Image
 
 
 def split_cmyk(rgb_array, invert=False, threshhold=1):
@@ -54,3 +58,16 @@ def invert_array(grayscale_array):
 
 def invert_array_multi(grayscale_arrays):
     return [invert_array(_) for _ in grayscale_arrays]
+
+
+def image_to_base64(image):
+    buffered = BytesIO()
+    image.save(buffered, format="PNG")
+
+    return base64.b64encode(buffered.getvalue()).decode("utf-8")
+
+
+def base64_to_image(base64_string):
+    image_bytes = BytesIO(base64.b64decode(base64_string))
+
+    return Image.open(image_bytes)
