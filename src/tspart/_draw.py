@@ -155,11 +155,10 @@ def draw_rgb_routes(
 
     size_out = tuple((size * scale).round().astype(int))
 
-    # TODO: Why are the channels mixed up?
     add_colors = (
-        (0, 0, 255),
         (255, 0, 0),
         (0, 255, 0),
+        (0, 0, 255),
     )
 
     img = Image.new(size=size_out, mode="RGB", color=(0, 0, 0))
