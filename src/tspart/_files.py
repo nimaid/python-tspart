@@ -2,7 +2,7 @@ import json
 import numpy as np
 from PIL import Image
 
-from tspart._helpers import ndarray_to_array_2d, image_to_array, array_to_ndarray_2d
+from tspart._helpers import ndarray_to_array_2d, array_to_ndarray_2d, image_to_array, array_to_image
 
 
 class TsplibSyntaxError(SyntaxError):
@@ -43,6 +43,10 @@ def load_tspart(filename):
 def load_image_as_array(filename, mode="RGB"):
     img = Image.open(filename)
     return image_to_array(img, mode)
+
+
+def save_array_as_image(filename, array, mode="RGB"):
+    array_to_image(array, mode).save(filename)
 
 
 def make_tsplib(points):

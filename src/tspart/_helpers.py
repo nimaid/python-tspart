@@ -1,4 +1,5 @@
 import numpy as np
+from PIL import Image
 import scipy.spatial
 import scipy.ndimage
 
@@ -12,8 +13,12 @@ def get_bounding_corners(points):
     return start, end
 
 
-def image_to_array(image, mode):
-    return np.asarray(image.convert(mode))
+def image_to_array(image, mode="RGB"):
+    return np.array(image.convert(mode))
+
+
+def array_to_image(array, mode="RGB"):
+    return Image.fromarray(array, mode)
 
 
 def map_points_to_tour(points, tour):
