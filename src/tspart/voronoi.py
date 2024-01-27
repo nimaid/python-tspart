@@ -314,7 +314,7 @@ def stipple_image(grayscale_array, points=5000, iterations=50, logging=True):
     return stippled / zoom
 
 
-def stipple_image_multi(grayscale_arrays, points=5000, iterations=50, logging=True, blur_sigma=3):
+def stipple_image_multi(grayscale_arrays, points=5000, iterations=50, logging=True):
     result = []
     for idx, grayscale_array in enumerate(grayscale_arrays):
         if logging:
@@ -324,8 +324,7 @@ def stipple_image_multi(grayscale_arrays, points=5000, iterations=50, logging=Tr
             grayscale_array=grayscale_array,
             points=points,
             iterations=iterations,
-            logging=logging,
-            blur_sigma=blur_sigma
+            logging=logging
         )
 
         result.append(stippled)
