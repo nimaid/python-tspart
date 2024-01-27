@@ -27,15 +27,27 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
 # Gallery
 <p align="center">
     <b>'Baboon' Standard Test Image</b>
-    <br>
-    CMYK + RGB + Grayscale
-    <br>
     500 Points
-    <br>
-    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon.png" width="150px" alt="'Baboon' Standard Test Image (Original)"/>
-    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500.png" width="150px" alt="'Baboon' Standard Test Image (CMYK)"/>
-    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_rgb.png" width="150px" alt="'Baboon' Standard Test Image (RGB)"/>
-    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_gray.png" width="150px" alt="'Baboon' Standard Test Image (Grayscale)"/>
+    <p>
+        Original
+        <br>
+        <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon.png" width="150px" alt="'Baboon' Standard Test Image (Original)"/>
+    </p>
+    <p>
+        CMYK
+        <br>
+        <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500.png" width="150px" alt="'Baboon' Standard Test Image (CMYK)"/>
+    </p>
+    <p>
+        RGB
+        <br>
+        <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_rgb.png" width="150px" alt="'Baboon' Standard Test Image (RGB)"/>
+    </p>
+    <p>
+        Grayscale
+        <br>
+        <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_gray.png" width="150px" alt="'Baboon' Standard Test Image (Grayscale)"/>
+    </p>
 </p>
 
 <p align="center">
