@@ -1,7 +1,7 @@
 import os
 import shutil
 from enum import Enum
-from typing import Sequence
+from typing import Sequence, Tuple
 
 import numpy as np
 from PIL import Image
@@ -42,6 +42,9 @@ class TspStudio:
             num_points: int = 5000,
             line_width: float = 2,
             white_threshold: int = 1,
+            invert: bool = False,
+            background: Tuple[int, int, int] | str = (255, 255, 255),
+            foreground: Tuple[int, int, int] | str = (0, 0, 0),
             points: Sequence[Sequence[float | Sequence[float]]] | None = None,
             is_routed: bool = False,
             jobs: Sequence[Sequence[int | str]] | None = None
@@ -51,6 +54,9 @@ class TspStudio:
         self.num_points = num_points
         self.line_width = line_width
         self.white_threshold = white_threshold
+        self.invert = invert
+        self.background = background
+        self.foreground = foreground
         self.points = points
         self.is_routed = is_routed
         self.jobs = jobs
@@ -81,11 +87,11 @@ class TspStudio:
 
         match self.mode:
             case ColorMode.CMYK:
-                self.channels = _split_cmyk(self._image, invert=False)
+                self.channels = _split_cmyk(self._image, invert=self.invert)
             case ColorMode.RGB:
-                self.channels = _split_rgb(self._image, invert=True)
+                self.channels = _split_rgb(self._image, invert=(not self.invert))
             case ColorMode.GRAYSCALE:
-                self.channels = [_rgb_to_grayscale(self._image, invert=False)]
+                self.channels = [_rgb_to_grayscale(self._image, invert=self.invert)]
 
     @property
     def num_points(self) -> int:
@@ -114,6 +120,30 @@ class TspStudio:
     @white_threshold.setter
     def white_threshold(self, value: int):
         self._white_threshold = max(1, value)
+
+    @property
+    def invert(self):
+        return self._invert
+
+    @invert.setter
+    def invert(self, value: bool):
+        self._invert = value
+
+    @property
+    def background(self):
+        return self._background
+
+    @background.setter
+    def background(self, value):
+        self._background = value
+
+    @property
+    def foreground(self):
+        return self._foreground
+
+    @foreground.setter
+    def foreground(self, value):
+        self._foreground = value
 
     @property
     def points(self) -> Sequence[Sequence[float | Sequence[float]]]:
@@ -145,13 +175,16 @@ class TspStudio:
     def data(self):
         return {
             "mode": self.mode,
-            "image": self.image,
             "num_points": self.num_points,
             "line_width": self.line_width,
             "white_threshold": self.white_threshold,
-            "points": self.points,
+            "invert": self.invert,
+            "background": self.background,
+            "foreground": self.foreground,
             "is_routed": self.is_routed,
-            "jobs": self.jobs
+            "jobs": self.jobs,
+            "points": self.points,
+            "image": self.image
         }
 
     def stipple(self, iterations=50, logging=True):
@@ -309,6 +342,8 @@ class TspStudio:
                     line_width=self.line_width,
                     scale=scale,
                     closed=closed,
+                    background=self.background,
+                    foreground=self.foreground,
                     subpixels=subpixels
                 )
 
@@ -321,12 +356,23 @@ def load(filename) -> TspStudio:
     if obj["points"] is not None:
         obj["points"] = _array_to_ndarray_2d(obj["points"])
 
+    # Backwards compatibility
+    if "invert" not in obj:
+        obj["invert"] = False
+    if "background" not in obj:
+        obj["background"] = (255, 255, 255)
+    if "foreground" not in obj:
+        obj["foreground"] = (0, 0, 0)
+
     return TspStudio(
             mode=obj["mode"],
             image=obj["image"],
             num_points=obj["num_points"],
             line_width=obj["line_width"],
             white_threshold=obj["white_threshold"],
+            invert=obj["invert"],
+            background=obj["background"],
+            foreground=obj["foreground"],
             points=obj["points"],
             is_routed=obj["is_routed"],
             jobs=obj["jobs"]
