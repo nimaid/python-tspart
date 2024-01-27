@@ -1,10 +1,14 @@
+from typing import Tuple, Sequence
+
 import numpy as np
 from PIL import Image
 import scipy.spatial
 import scipy.ndimage
 
 
-def get_bounding_corners(points):
+def get_bounding_corners(
+        points: Sequence[Sequence[float, float]]
+) -> Tuple[float, float]:
     points = np.array(points)
 
     start = np.floor(points.min(0)).astype(int)
@@ -13,19 +17,31 @@ def get_bounding_corners(points):
     return start, end
 
 
-def image_to_array(image, mode="RGB"):
+def image_to_array(
+        image: Image,
+        mode: str = "RGB"
+) -> np.ndarray[np.ndarray[float | np.ndarray[float]]]:
     return np.array(image.convert(mode))
 
 
-def array_to_image(array, mode="RGB"):
+def array_to_image(
+        array: np.ndarray[np.ndarray[float | np.ndarray[float]]],
+        mode: str = "RGB"
+) -> Image:
     return Image.fromarray(array, mode)
 
 
-def map_points_to_tour(points, tour):
+def map_points_to_tour(
+        points: Sequence[Sequence[float, float]],
+        tour: Sequence[int]
+) -> np.ndarray[np.ndarray[float, float]]:
     return np.array([points[idx] for idx in tour])
 
 
-def map_points_to_tour_multi(points_list, tours_list):
+def map_points_to_tour_multi(
+        points_list: Sequence[Sequence[Sequence[float, float]]],
+        tours_list: Sequence[Sequence[int]]
+) -> list[np.ndarray[np.ndarray[float, float]]]:
     result = []
     for idx, points in enumerate(points_list):
         routes = tours_list[idx]
