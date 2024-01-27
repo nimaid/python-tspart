@@ -50,11 +50,12 @@ class TspStudio:
             jobs: Sequence[Sequence[int | str]] | None = None
     ):
         self.mode = mode
+        self.invert = invert
         self.image = image
         self.num_points = num_points
         self.line_width = line_width
         self.white_threshold = white_threshold
-        self.invert = invert
+
         self.background = background
         self.foreground = foreground
         self.points = points
@@ -87,11 +88,11 @@ class TspStudio:
 
         match self.mode:
             case ColorMode.CMYK:
-                self.channels = _split_cmyk(self._image, invert=self.invert)
+                self.channels = _split_cmyk(self._image, invert=self._real_invert)
             case ColorMode.RGB:
-                self.channels = _split_rgb(self._image, invert=(not self.invert))
+                self.channels = _split_rgb(self._image, invert=self._real_invert)
             case ColorMode.GRAYSCALE:
-                self.channels = [_rgb_to_grayscale(self._image, invert=self.invert)]
+                self.channels = [_rgb_to_grayscale(self._image, invert=self._real_invert)]
 
     @property
     def num_points(self) -> int:
@@ -128,6 +129,14 @@ class TspStudio:
     @invert.setter
     def invert(self, value: bool):
         self._invert = value
+
+        match self.mode:
+            case ColorMode.CMYK:
+                self._real_invert = self._invert
+            case ColorMode.RGB:
+                self._real_invert = not self._invert
+            case ColorMode.GRAYSCALE:
+                self._real_invert = self._invert
 
     @property
     def background(self):

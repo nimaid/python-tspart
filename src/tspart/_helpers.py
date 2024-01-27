@@ -134,7 +134,7 @@ def factors_from_image_multi(grayscale_arrays, points_list, blur_sigma=1):
     return factors_list
 
 
-def filter_white_points(grayscale_array, points, threshold=1, blur_sigma=1):
+def filter_white_points(grayscale_array, points, threshold=254, blur_sigma=1):
     if blur_sigma > 0:
         grayscale_array = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
 
@@ -144,7 +144,7 @@ def filter_white_points(grayscale_array, points, threshold=1, blur_sigma=1):
             grayscale_array=grayscale_array,
             point=point
         )
-        if value >= threshold:
+        if value <= threshold:
             result.append(point)
     return result
 
