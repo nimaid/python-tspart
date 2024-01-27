@@ -92,8 +92,7 @@ def factors_from_image(grayscale_array, points, blur_sigma=1):
     for point in points:
         factor = size_factor(
             grayscale_array=grayscale_array,
-            point=point,
-            blur_sigma=blur_sigma
+            point=point
         )
         factors.append(factor)
 
