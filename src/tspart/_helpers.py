@@ -70,23 +70,32 @@ def circle_point(radius, angle, offset=(0, 0)):
     return point + offset
 
 
-def get_point_value(grayscale_array, point):
+def get_point_value(grayscale_array, point, blur_sigma=0):
+    if blur_sigma > 0:
+        grayscale_array = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
+
     y, x = np.floor(np.array(point)).astype(int)
 
     return grayscale_array[x][y]
 
 
-def size_factor(grayscale_array, point):
-    return 1 - (get_point_value(grayscale_array, point) / 255)
+def size_factor(grayscale_array, point, blur_sigma=1):
+    value = get_point_value(
+        grayscale_array=grayscale_array,
+        point=point,
+        blur_sigma=blur_sigma
+    )
+    return 1 - (value / 255)
 
 
 def factors_from_image(grayscale_array, points, blur_sigma=1):
-    if blur_sigma > 0:
-        grayscale_array = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
-
     factors = []
     for point in points:
-        factor = size_factor(grayscale_array, point)
+        factor = size_factor(
+            grayscale_array=grayscale_array,
+            point=point,
+            blur_sigma=blur_sigma
+        )
         factors.append(factor)
 
     return np.array(factors)
@@ -106,22 +115,27 @@ def factors_from_image_multi(grayscale_arrays, points_list, blur_sigma=1):
     return factors_list
 
 
-def filter_white_points(grayscale_array, points, threshold=1):
+def filter_white_points(grayscale_array, points, threshold=1, blur_sigma=1):
     result = []
     for point in points:
-        if get_point_value(grayscale_array, point) >= threshold:
+        value = get_point_value(
+            grayscale_array=grayscale_array,
+            point=point,
+            blur_sigma=blur_sigma
+        )
+        if value >= threshold:
             result.append(point)
-
     return result
 
 
-def filter_white_points_multi(grayscale_arrays, points_list, threshold=1):
+def filter_white_points_multi(grayscale_arrays, points_list, threshold=1, blur_sigma=1):
     results = []
     for grayscale_array, points in zip(grayscale_arrays, points_list):
         points = filter_white_points(
             grayscale_array=grayscale_array,
             points=points,
-            threshold=threshold
+            threshold=threshold,
+            blur_sigma=blur_sigma
         )
 
         results.append(points)
