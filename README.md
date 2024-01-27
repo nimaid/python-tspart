@@ -27,28 +27,45 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
 # Gallery
 <p align="center">
     <b>'Baboon' Standard Test Image</b>
+    <br>
     500 Points
-    <p>
-        Original
-        <br>
-        <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon.png" width="150px" alt="'Baboon' Standard Test Image (Original)"/>
-    </p>
-    <p>
-        CMYK
-        <br>
-        <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500.png" width="150px" alt="'Baboon' Standard Test Image (CMYK)"/>
-    </p>
-    <p>
-        RGB
-        <br>
-        <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_rgb.png" width="150px" alt="'Baboon' Standard Test Image (RGB)"/>
-    </p>
-    <p>
-        Grayscale
-        <br>
-        <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_gray.png" width="150px" alt="'Baboon' Standard Test Image (Grayscale)"/>
-    </p>
 </p>
+
+<table align="center" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse !important;">
+    <tr style="border: none !important;">
+        <td align="center" style="border: none !important;">
+            Original
+        </td>
+        <td align="center" style="border: none !important;">
+            CMYK
+        </td>
+    </tr>
+    <tr style="border: none !important;">
+        <td align="center" style="border: none !important;">
+            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon.png" width="150px" alt="'Baboon' Standard Test Image (Original)"/>
+        </td>
+        <td align="center" style="border: none !important;">
+            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500.png" width="150px" alt="'Baboon' Standard Test Image (CMYK)"/>
+        </td>
+    </tr>
+    <tr style="border: none !important;">
+        <td align="center" style="border: none !important;">
+            RGB
+        </td>
+        <td align="center" style="border: none !important;">
+            Grayscale
+        </td>
+    </tr>
+    <tr style="border: none !important;">
+        <td align="center" style="border: none !important;">
+            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_rgb.png" width="150px" alt="'Baboon' Standard Test Image (RGB)"/>
+        </td>
+        <td align="center" style="border: none !important;">
+            <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/baboon_500_gray.png" width="150px" alt="'Baboon' Standard Test Image (Grayscale)"/>
+        </td>
+    </tr>
+</table>
+
 
 <p align="center">
     <b>Bliss</b>
