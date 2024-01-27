@@ -185,8 +185,8 @@ class TspStudio:
         if self.points is None:
             raise ValueError("Points not initialized")
 
-        self.setup_online_solve()
-        self.cancel_online_solve()
+        self.setup_online_solves()
+        self.cancel_online_solves()
 
         self.jobs = _neos.submit_solves(
             client=self.neos,
@@ -195,7 +195,7 @@ class TspStudio:
         )
 
     def cancel_online_solves(self):
-        self.setup_online_solve()
+        self.setup_online_solves()
 
         if self.jobs is not None:
             _neos.cancel_solves(
