@@ -70,25 +70,24 @@ def circle_point(radius, angle, offset=(0, 0)):
     return point + offset
 
 
-def get_point_value(grayscale_array, point, blur_sigma=0):
-    if blur_sigma > 0:
-        grayscale_array = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
-
+def get_point_value(grayscale_array, point):
     y, x = np.floor(np.array(point)).astype(int)
 
     return grayscale_array[x][y]
 
 
-def size_factor(grayscale_array, point, blur_sigma=1):
+def size_factor(grayscale_array, point):
     value = get_point_value(
         grayscale_array=grayscale_array,
-        point=point,
-        blur_sigma=blur_sigma
+        point=point
     )
     return 1 - (value / 255)
 
 
 def factors_from_image(grayscale_array, points, blur_sigma=1):
+    if blur_sigma > 0:
+        grayscale_array = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
+
     factors = []
     for point in points:
         factor = size_factor(
@@ -116,12 +115,14 @@ def factors_from_image_multi(grayscale_arrays, points_list, blur_sigma=1):
 
 
 def filter_white_points(grayscale_array, points, threshold=1, blur_sigma=1):
+    if blur_sigma > 0:
+        grayscale_array = scipy.ndimage.gaussian_filter(grayscale_array, sigma=blur_sigma)
+
     result = []
     for point in points:
         value = get_point_value(
             grayscale_array=grayscale_array,
-            point=point,
-            blur_sigma=blur_sigma
+            point=point
         )
         if value >= threshold:
             result.append(point)
