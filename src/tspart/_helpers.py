@@ -7,8 +7,8 @@ import scipy.ndimage
 
 
 def get_bounding_corners(
-        points: Sequence[Sequence[float, float]]
-) -> Tuple[float, float]:
+        points: Sequence[Sequence[float]]
+) -> Tuple[float]:
     points = np.array(points)
 
     start = np.floor(points.min(0)).astype(int)
@@ -32,16 +32,16 @@ def array_to_image(
 
 
 def map_points_to_tour(
-        points: Sequence[Sequence[float, float]],
+        points: Sequence[Sequence[float]],
         tour: Sequence[int]
-) -> np.ndarray[np.ndarray[float, float]]:
+) -> np.ndarray[np.ndarray[float]]:
     return np.array([points[idx] for idx in tour])
 
 
 def map_points_to_tour_multi(
-        points_list: Sequence[Sequence[Sequence[float, float]]],
+        points_list: Sequence[Sequence[Sequence[float]]],
         tours_list: Sequence[Sequence[int]]
-) -> list[np.ndarray[np.ndarray[float, float]]]:
+) -> list[np.ndarray[np.ndarray[float]]]:
     result = []
     for idx, points in enumerate(points_list):
         routes = tours_list[idx]
