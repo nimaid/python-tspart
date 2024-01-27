@@ -211,6 +211,8 @@ class TspStudio:
         if self.jobs is None:
             raise ValueError("Jobs not initialized")
 
+        self.setup_online_solves()
+
         results = _neos.get_solves(
             client=self.neos,
             job_list=self.jobs,
@@ -232,6 +234,8 @@ class TspStudio:
             raise ValueError("Points not initialized")
         if self.jobs is None:
             raise ValueError("Jobs not initialized")
+
+        self.setup_online_solves()
 
         results = _neos.get_solves_blocking(
             client=self.neos,

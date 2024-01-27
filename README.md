@@ -98,13 +98,13 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
 </p>
 
 <p align="center">
-    <b>Self Portrait (Circular)</b>
+    <b><a href="https://www.eso.org/public/images/eso1208a/">ESO 1208A</a></b>
     <br>
     CMYK
     <br>
-    35000 Points
+    100000 Points
     <br>
-    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/ella_circle_35000_CMYK.png" width="800px" alt="Self Portrait (Circular)"/>
+    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/eso1208a_100000_CMYK.png" width="800px" alt="ESO 1208A"/>
 </p>
 
 # References
