@@ -51,7 +51,9 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
 <p align="center">
     <b>Bowser The Fearless</b>
     <br>
-    CMYK, 25000 Points
+    CMYK
+    <br>
+    25000 Points
     <br>
     <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/bowser_25000.png" width="800px" alt="Bowser The Fearless"/>
 </p>
@@ -59,7 +61,9 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
 <p align="center">
     <b>Self Portrait</b>
     <br>
-    CMYK, 35000 Points
+    CMYK
+    <br>
+    35000 Points
     <br>
     <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/ella_35000.png" width="800px" alt="Self Portrait"/>
 </p>
