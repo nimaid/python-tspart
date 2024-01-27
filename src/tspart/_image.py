@@ -34,14 +34,14 @@ def split_rgb(rgb_array, invert=False):
     return result
 
 
-def rgb_to_gray(rgb):
+def luminance(rgb):
     r, g, b = rgb
 
     return int(round((0.299 * r) + (0.587 * g) + (0.114 * b)))
 
 
-def rgb_array_to_grayscale(rgb_array, invert=False):
-    result = np.array([[rgb_to_gray(__) for __ in _] for _ in rgb_array])
+def rgb_to_grayscale(rgb_array, invert=False):
+    result = np.array([[luminance(__) for __ in _] for _ in rgb_array])
     if invert:
         result = invert_array_multi(result)
 

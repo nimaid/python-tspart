@@ -21,12 +21,20 @@ def load_json(filename):
     return obj
 
 
-def save_tspart(filename, points, size, factors=None, indent=2):
+def make_tspart(points, size, factors=None):
     points = ndarray_to_array_2d(points)
     if factors is not None:
         factors = [list(_) for _ in factors]
 
-    obj = {"points": points, "factors": factors, "size": size}
+    return {"points": points, "factors": factors, "size": size}
+
+
+def save_tspart(filename, points, size, factors=None, indent=2):
+    obj = make_tspart(
+        points=points,
+        size=size,
+        factors=factors
+    )
 
     save_json(filename=filename, obj=obj, indent=indent)
 
@@ -53,8 +61,8 @@ def save_array_as_image(filename, array, mode="RGB"):
     array_to_image(array, mode).save(filename)
 
 
-def make_tsplib(points):
-    result = "NAME: tspart\r\n"
+def make_tsplib(points, name="tspart"):
+    result = f"NAME: {name}\r\n"
     result += "TYPE: TSP\r\n"
     result += f"DIMENSION: {len(points)}\r\n"
     result += "EDGE_WEIGHT_TYPE: EUC_2D\r\n"
