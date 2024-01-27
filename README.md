@@ -68,6 +68,16 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
     <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/ella_35000.png" width="800px" alt="Self Portrait"/>
 </p>
 
+<p align="center">
+    <b>Self Portrait (Circular)</b>
+    <br>
+    CMYK
+    <br>
+    35000 Points
+    <br>
+    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/ella_circle_35000.png" width="800px" alt="Self Portrait (Circular)"/>
+</p>
+
 # References
 - [Original Stippling Code](https://github.com/ReScience-Archives/Rougier-2017) by [Nicolas Rougier](https://github.com/rougier)
 - [Google OR-Tools TSP Guide](https://developers.google.com/optimization/routing/tsp)
