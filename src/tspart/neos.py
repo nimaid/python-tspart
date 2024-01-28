@@ -97,8 +97,9 @@ def get_solve(client, job_number, password, points=None):
         raise NeosSolveError(f"Neos job completed with failed code: {completion_code}")
 
     neos_results = client.getFinalResults(job_number, password)
+    neos_results = neos_results.data.decode()
 
-    results_arr = [_.strip() for _ in neos_results.data.decode().split("\n") if _.strip() != ""]
+    results_arr = [_.strip() for _ in neos_results.split("\n") if _.strip() != ""]
 
     # Get the tour indexes from the raw response
     raw_tour = []
@@ -107,6 +108,10 @@ def get_solve(client, job_number, password, points=None):
             break
 
         raw_tour.append(line)
+
+    if len(raw_tour) == 0:
+        raise NeosSolveError(f"Neos job did not return any data, got response:\n\n{neos_results}")
+
     raw_tour = raw_tour[::-1][1:]
 
     if len(raw_tour[0].split(" ")) == 3:

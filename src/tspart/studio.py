@@ -34,6 +34,10 @@ class ColorMode(Enum):
     GRAYSCALE = "L"
 
 
+class InadequateResultsWarning(RuntimeWarning):
+    pass
+
+
 class TspStudio:
     def __init__(
             self,
@@ -41,7 +45,7 @@ class TspStudio:
             image: Image,
             num_points: int = 5000,
             line_width: float = 2,
-            white_threshold: int = 1,
+            white_threshold: int = 254,
             invert: bool = False,
             background: Tuple[int, int, int] | str = (255, 255, 255),
             foreground: Tuple[int, int, int] | str = (0, 0, 0),
@@ -204,12 +208,21 @@ class TspStudio:
             logging=logging
         )
 
-        if self.white_threshold > 0:
+        if self.white_threshold < 255:
             self.points = _filter_white_points_multi(
                 grayscale_arrays=self.channels,
                 points_list=self.points,
                 threshold=self.white_threshold
             )
+
+        for idx, p in enumerate(self.points):
+            length = len(p)
+            if length == 0:
+                raise InadequateResultsWarning(f"Channel {idx}: "
+                                               f"Stippling produced no points, try raising the white threshold")
+            elif length < 100:
+                raise InadequateResultsWarning(f"Channel {idx}: "
+                                               f"Stippling produced very few ({length}) points, solves may fail")
 
     def compute_factors(self):
         if self.points is None:
@@ -364,14 +377,6 @@ def load(filename) -> TspStudio:
     obj["mode"] = ColorMode(obj["mode"])
     if obj["points"] is not None:
         obj["points"] = _array_to_ndarray_2d(obj["points"])
-
-    # Backwards compatibility
-    if "invert" not in obj:
-        obj["invert"] = False
-    if "background" not in obj:
-        obj["background"] = (255, 255, 255)
-    if "foreground" not in obj:
-        obj["foreground"] = (0, 0, 0)
 
     return TspStudio(
             mode=obj["mode"],
