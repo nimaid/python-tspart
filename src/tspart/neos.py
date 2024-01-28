@@ -160,21 +160,3 @@ def get_solves(client, job_list, points_list=None):
         result.append(r)
 
     return result
-
-
-def get_solve_blocking(client, job_number, password, points=None, delay_minutes=0.25, logging=True):
-    result = None
-
-    while result is None:
-        result = get_solve(
-            client=client,
-            job_number=job_number,
-            password=password,
-            points=points
-        )
-        if logging:
-            print("Still waiting for solve...", file=sys.stderr)
-
-        time.sleep(delay_minutes * 60)
-
-    return result
