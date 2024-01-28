@@ -309,23 +309,23 @@ class TspStudio:
         # False = Tried and failed
         # True = Tried and succeeded, that channel is sorted
 
+        def message(text):
+            if logging:
+                print(text, file=sys.stderr)
+
         def save_file():
             if save_filename is not None:
                 self.save(save_filename)
-                if logging:
-                    print(f"Saved to {save_filename}\n", file=sys.stderr)
+                message(f"Saved to {save_filename}\n")
 
         tries = [0] * self.num_channels
-        jobs_not_completed = [_ is not True for _ in self._jobs]
-        while any(jobs_not_completed):
-            if logging:
-                print(f"Submitting {sum([_ is None or _ is False for _ in self._jobs])} solves...", file=sys.stderr)
+        while any([_ is not True for _ in self._jobs]):
+            message(f"Submitting {sum([_ is None or _ is False for _ in self._jobs])} solves...")
 
             # Make requests for any failed or unattempted jobs
             for idx, job in enumerate(self._jobs):
                 if job is None or job is False:
-                    if logging:
-                        print(f"Submitting solve #{idx}.", file=sys.stderr)
+                    message(f"Submitting solve #{idx}.")
                     try:
                         self._jobs[idx] = self._submit_online_solve(
                             points=self.points[idx],
@@ -333,16 +333,15 @@ class TspStudio:
                         )
                     except:
                         self._jobs[idx] = False
-                        if logging:
-                            print(f"Failed to submit solve #{idx} failed, will retry later.", file=sys.stderr)
+                        message(f"Failed to submit solve #{idx} failed, will retry later.")
 
             save_file()
 
-            # Try to get each job in a loop until they all fail or finish
+            # Try to get each job in a loop until they all fail or finish, or until we hit max retries
             jobs_not_ended = [not isinstance(_, bool) for _ in self._jobs]
             while any(jobs_not_ended):
-                if logging:
-                    print(f"Trying to get {sum(jobs_not_ended)} solves...", file=sys.stderr)
+                message(f"Trying to get {sum(jobs_not_ended)} solves...")
+                got_result = False
                 for idx, job in enumerate(self._jobs):
                     if not isinstance(job, bool) and job is not None:
                         job_number, password = job
@@ -355,37 +354,34 @@ class TspStudio:
                             if result is not None:
                                 self._points[idx] = result
                                 self._jobs[idx] = True
-                                if logging:
-                                    print(f"Got solve #{idx}!", file=sys.stderr)
+                                got_result = True
+                                message(f"Got solve #{idx}!")
                             else:
-                                if logging:
-                                    print(f"Still waiting for solve #{idx}...", file=sys.stderr)
+                                message(f"Still waiting for solve #{idx}...")
                         except _neos.NeosSolveError as e:
                             self._jobs[idx] = False
                             tries[idx] += 1
-                            if logging:
-                                print(f"Solve #{idx} failed, will retry later. (Try {tries[idx]}/{max_tries})", file=sys.stderr)
+                            message(f"Solve #{idx} failed, will retry later. (Try {tries[idx]}/{max_tries})")
 
                             if tries[idx] == max_tries:
-                                if logging:
-                                    print(f"Reached max tries for solve #{idx}, stopping.",
-                                          file=sys.stderr)
+                                message(f"Reached max tries for solve #{idx}, stopping.")
                                 save_file()
                                 return False
 
                 jobs_not_ended = [not isinstance(_, bool) for _ in self._jobs]
 
-                if logging:
-                    print(f"Still waiting for {sum(jobs_not_ended)} solves...", file=sys.stderr)
+                if got_result:
+                    message(f"Got result, retrying submit...")
+                    save_file()
+                    break  # Once we get a result, immediately try requests again
+
+                message(f"Still waiting for {sum(jobs_not_ended)} solves...")
 
                 save_file()
 
                 time.sleep(delay_minutes * 60)
 
-            jobs_not_completed = [_ is not True for _ in self._jobs]
-
-        if logging:
-            print(f"All solves done!", file=sys.stderr)
+        message(f"All solves done!")
 
         self.is_routed = True
         save_file()
