@@ -73,7 +73,11 @@ class TspStudio:
         self.jobs = jobs
 
         self.neos = None
-        self.factors = None
+
+        if self.points != None:
+            self.compute_factors()
+        else:
+            self.factors = None
 
     @property
     def mode(self) -> ColorMode:
@@ -305,6 +309,7 @@ class TspStudio:
 
         solves = [None] * num_solves
         solves_not_done = [_ is None for _ in solves]
+        changed = False
         while any(solves_not_done):
             for idx in range(num_solves):
                 try:
@@ -315,17 +320,19 @@ class TspStudio:
                         password=password
                     )
                 except _neos.NeosSolveError as e:
-                    print(f"Solve {idx} failed, retrying...\n\nFull error:\n{e}", file=sys.stderr)
+                    print(f"\nSolve {idx} failed, retrying...\n\nFull error:\n{e}\n", file=sys.stderr)
                     jobs[idx] = self.submit_online_solve(
                         points=self.points[idx],
                         email=email
                     )
+                    changed = True
 
-            if jobs != self.jobs:
+            if changed:
                 self.jobs = jobs
                 if save_location is not None:
                     self.save(save_location, logging=logging)
 
+            changed = False
             solves_not_done = [_ is None for _ in solves]
 
             num_results = sum([not _ for _ in solves_not_done])
@@ -417,6 +424,8 @@ def load(filename) -> TspStudio:
     obj["mode"] = ColorMode(obj["mode"])
     if obj["points"] is not None:
         obj["points"] = _array_to_ndarray_2d(obj["points"])
+    obj["background"] = tuple(obj["background"])
+    obj["foreground"] = tuple(obj["foreground"])
 
     return TspStudio(
         mode=obj["mode"],
