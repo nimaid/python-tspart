@@ -96,7 +96,7 @@ def get_solve(client, job_number, password, points=None):
     neos_results = client.getFinalResults(job_number, password)
     neos_results = neos_results.data.decode()
     if completion_code != "Normal":
-        raise NeosSolveError(f"Neos job completed with failed code: {completion_code}\n"
+        raise NeosSolveError(f"Neos job completed with failed code: {completion_code}\n\n"
                              f"Full response:\n"
                              f"{neos_results}")
 
