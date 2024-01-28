@@ -46,7 +46,7 @@ class TspStudio:
     def __init__(
             self,
             mode: ColorMode,
-            image: Image,
+            image: Image.Image | str,
             num_points: int = 5000,
             line_width: float = 2,
             white_threshold: int = 254,
@@ -89,8 +89,13 @@ class TspStudio:
         return _array_to_image(self._image)
 
     @image.setter
-    def image(self, value: Image):
-        self._image = _image_to_array(value)
+    def image(self, value: Image.Image | str):
+        if isinstance(value, str):
+            self.image_string = value
+            self._image = _image_to_array(_base64_to_image(self.image_string))
+        else:
+            self._image = _image_to_array(value)
+            self.image_string = _image_to_base64(_array_to_image(self._image))
 
         self.size = _image_array_size(self._image)
 
@@ -201,7 +206,7 @@ class TspStudio:
             "is_routed": self.is_routed,
             "jobs": self.jobs,
             "points": self.points,
-            "image": self.image
+            "image": self.image_string
         }
 
     def stipple(self, iterations=50, logging=True):
@@ -377,7 +382,6 @@ class TspStudio:
 def load(filename) -> TspStudio:
     obj = _load_json(filename)
 
-    obj["image"] = _base64_to_image(obj["image"])
     obj["mode"] = ColorMode(obj["mode"])
     if obj["points"] is not None:
         obj["points"] = _array_to_ndarray_2d(obj["points"])
@@ -400,7 +404,6 @@ def load(filename) -> TspStudio:
 def save(filename, studio, round_places=2):
     obj = studio.data
 
-    obj["image"] = _image_to_base64(obj["image"])
     obj["mode"] = obj["mode"].value
     if obj["points"] is not None:
         obj["points"] = _ndarray_to_array_2d(

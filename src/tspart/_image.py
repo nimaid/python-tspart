@@ -60,9 +60,9 @@ def invert_array_multi(grayscale_arrays):
     return [invert_array(_) for _ in grayscale_arrays]
 
 
-def image_to_base64(image):
+def image_to_base64(image, format="JPEG"):
     buffered = BytesIO()
-    image.save(buffered, format="PNG")
+    image.save(buffered, format=format)
 
     return base64.b64encode(buffered.getvalue()).decode("utf-8")
 
