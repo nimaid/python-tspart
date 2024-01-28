@@ -85,7 +85,7 @@ def cancel_solve(client, job_number, password):
 
 def cancel_solves(client, job_list):
     for job in job_list:
-        if job is None:
+        if job is None or isinstance(job, bool):
             continue
 
         job_number, password = job

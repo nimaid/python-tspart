@@ -288,7 +288,7 @@ class TspStudio:
             points=points
         )
 
-    def online_solves(self, email, delay_minutes=0.25, max_tries=3, logging=True):
+    def online_solves(self, email, delay_minutes=0.25, max_tries=3, logging=True, save_filename=None):
         if self.points is None:
             raise ValueError("Points not initialized")
 
@@ -296,24 +296,47 @@ class TspStudio:
 
         # TODO: Implement max tries, if any channel hits the limit, give up on it, set job to False, and throw a warning
 
-        # Note:
         # None = Not scheduled yet (default)
         # Tuple = Currently scheduled, last seen as processing
         # False = Tried and failed
         # True = Tried and succeeded, that channel is sorted
 
         tries = [0] * self.num_channels
-        while any([_ is not True for _ in self._jobs]):
+        jobs_not_completed = [_ is not True for _ in self._jobs]
+        while any(jobs_not_completed):
+            if logging:
+                print(f"Submitting {sum(jobs_not_completed)} solves...", file=sys.stderr)
+
             # Make requests for any failed or unattempted jobs
             for idx, job in enumerate(self._jobs):
                 if job is None or job is False:
-                    self._jobs[idx] = self._submit_online_solve(
-                        points=self.points[idx],
-                        email=email
-                    )
+                    if logging:
+                        print(f"Submitting solve #{idx}.", file=sys.stderr)
+                    if tries[idx] == max_tries:
+                        if logging:
+                            print(f"Reached max tries for solve #{idx}, canceling other solves", file=sys.stderr)
+                        self.cancel_online_solves()
+                        return False
+                    try:
+                        self._jobs[idx] = self._submit_online_solve(
+                            points=self.points[idx],
+                            email=email
+                        )
+                    except:
+                        self._jobs[idx] = False
+                        if logging:
+                            print(f"Failed to submit solve #{idx} failed, will retry later.", file=sys.stderr)
+
+            if save_filename is not None:
+                self.save(save_filename)
+                if logging:
+                    print(f"Saved to {save_filename}", file=sys.stderr)
 
             # Try to get each job in a loop until they all fail or finish
-            while any([_ is None for _ in self._jobs]):
+            jobs_not_ended = [not isinstance(_, bool) for _ in self._jobs]
+            while any(jobs_not_ended):
+                if logging:
+                    print(f"Trying to get {sum(jobs_not_ended)} solves...", file=sys.stderr)
                 for idx, job in enumerate(self._jobs):
                     if not isinstance(job, bool) and job is not None:
                         job_number, password = job
@@ -326,13 +349,35 @@ class TspStudio:
                             if result is not None:
                                 self._points[idx] = result
                                 self._jobs[idx] = True
+                                if logging:
+                                    print(f"Got solve #{idx}!", file=sys.stderr)
+                            else:
+                                if logging:
+                                    print(f"Still waiting for solve #{idx}...", file=sys.stderr)
                         except _neos.NeosSolveError as e:
                             self._jobs[idx] = False
+                            tries[idx] += 1
                             if logging:
-                                print(f"Solve {idx} failed, will retry later.", file=sys.stderr)
+                                print(f"Solve #{idx} failed, will retry later.", file=sys.stderr)
+
+                jobs_not_ended = [not isinstance(_, bool) for _ in self._jobs]
+
+                if logging:
+                    print(f"Still waiting for {sum(jobs_not_ended)} solves...", file=sys.stderr)
+
+                if save_filename is not None:
+                    self.save(save_filename)
+                    if logging:
+                        print(f"Saved to {save_filename}", file=sys.stderr)
 
                 time.sleep(delay_minutes * 60)
 
+            jobs_not_completed = [_ is not True for _ in self._jobs]
+
+        if logging:
+            print(f"All solves done!", file=sys.stderr)
+
+        return True
 
     def cancel_online_solves(self):
         self._setup_online_solves()
@@ -421,6 +466,7 @@ class TspStudio:
 
         if all([_ is not None for _ in results]):
             self.points = results
+            self.jobs = [True] * len(results)
             self.is_routed = True
             return True
 
