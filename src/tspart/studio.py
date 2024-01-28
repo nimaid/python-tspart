@@ -55,12 +55,13 @@ class TspStudio:
             invert: bool = False,
             background: Tuple[int, int, int] | str = (255, 255, 255),
             foreground: Tuple[int, int, int] | str = (0, 0, 0),
-            points: Sequence[Sequence[float | Sequence[float]]] | None = None,
+            points: Sequence[Sequence[float | Sequence[float]] | None] | None = None,
             is_routed: bool = False,
-            jobs: Sequence[Sequence[int | str]] | None = None
+            jobs: Sequence[Sequence[int | str] | None | bool] | None = None
     ):
         self.neos = None
         self.factors = None
+        self.num_channels = None
 
         self.mode = mode
         self.invert = invert
@@ -73,7 +74,10 @@ class TspStudio:
         self.foreground = foreground
         self.points = points
         self.is_routed = is_routed
-        self.jobs = jobs
+        if jobs is None:
+            self.jobs = [None] * self.num_channels
+        else:
+            self.jobs = jobs
 
     @property
     def mode(self) -> ColorMode:
@@ -85,6 +89,14 @@ class TspStudio:
             self._mode = value
         else:
             self._mode = ColorMode(value)
+
+        match self._mode:
+            case ColorMode.CMYK:
+                self.num_channels = 4
+            case ColorMode.RGB:
+                self.num_channels = 3
+            case ColorMode.GRAYSCALE:
+                self.num_channels = 1
 
     @property
     def image(self) -> Image:
@@ -177,7 +189,7 @@ class TspStudio:
         if self._points is None:
             self.factors = None
         else:
-            self.compute_factors()
+            self._compute_factors()
 
         self.is_routed = False
 
@@ -194,7 +206,7 @@ class TspStudio:
         return self._jobs
 
     @jobs.setter
-    def jobs(self, value: Sequence[Sequence[int | str]] | None):
+    def jobs(self, value: Sequence[Sequence[int | str] | None | bool]):
         self._jobs = value
 
     @property
@@ -243,7 +255,7 @@ class TspStudio:
                 raise InadequateResultsWarning(f"Channel {idx}: "
                                                f"Stippling produced very few ({length}) points, solves may fail")
 
-    def compute_factors(self):
+    def _compute_factors(self):
         if self.points is None:
             raise ValueError("Points not initialized")
         self.factors = _factors_from_image_multi(
@@ -251,24 +263,93 @@ class TspStudio:
             points_list=self.points
         )
 
-    def setup_online_solves(self):
+    def _setup_online_solves(self):
         if self.neos is None:
             self.neos = _neos.get_client()
 
-    def submit_online_solve(self, points, email):
-        self.setup_online_solves()
+    def _submit_online_solve(self, points, email):
+        self._setup_online_solves()
 
-        return _neos.submit_solve(
+        job_number, password = _neos.submit_solve(
             client=self.neos,
             email=email,
             points=points
         )
 
+        return job_number, password
+
+    def _get_online_solve(self, points, job_number, password):
+        self._setup_online_solves()
+
+        return _neos.get_solve(
+            client=self.neos,
+            job_number=job_number,
+            password=password,
+            points=points
+        )
+
+    def online_solves(self, email, delay_minutes=0.25, max_tries=3, logging=True):
+        if self.points is None:
+            raise ValueError("Points not initialized")
+
+        self._setup_online_solves()
+
+        # TODO: Implement max tries, if any channel hits the limit, give up on it, set job to False, and throw a warning
+
+        # Note:
+        # None = Not scheduled yet (default)
+        # Tuple = Currently scheduled, last seen as processing
+        # False = Tried and failed
+        # True = Tried and succeeded, that channel is sorted
+
+        tries = [0] * self.num_channels
+        while any([_ is not True for _ in self._jobs]):
+            # Make requests for any failed or unattempted jobs
+            for idx, job in enumerate(self._jobs):
+                if job is None or job is False:
+                    self._jobs[idx] = self._submit_online_solve(
+                        points=self.points[idx],
+                        email=email
+                    )
+
+            # Try to get each job in a loop until they all fail or finish
+            while any([_ is None for _ in self._jobs]):
+                for idx, job in enumerate(self._jobs):
+                    if not isinstance(job, bool) and job is not None:
+                        job_number, password = job
+                        try:
+                            result = self._get_online_solve(
+                                points=self.points[idx],
+                                job_number=job_number,
+                                password=password
+                            )
+                            if result is not None:
+                                self._points[idx] = result
+                                self._jobs[idx] = True
+                        except _neos.NeosSolveError as e:
+                            self._jobs[idx] = False
+                            if logging:
+                                print(f"Solve {idx} failed, will retry later.", file=sys.stderr)
+
+                time.sleep(delay_minutes * 60)
+
+
+    def cancel_online_solves(self):
+        self._setup_online_solves()
+
+        _neos.cancel_solves(
+            client=self.neos,
+            job_list=self.jobs
+            )
+
+        self.jobs = [None] * self.num_channels
+
+    '''
     def submit_online_solves(self, email):
         if self.points is None:
             raise ValueError("Points not initialized")
 
-        self.setup_online_solves()
+        self._setup_online_solves()
         self.cancel_online_solves()
 
         self.jobs = _neos.submit_solves(
@@ -276,25 +357,16 @@ class TspStudio:
             email=email,
             points_list=self.points
         )
+    '''
 
-    def cancel_online_solves(self):
-        self.setup_online_solves()
-
-        if self.jobs is not None:
-            _neos.cancel_solves(
-                client=self.neos,
-                job_list=self.jobs
-            )
-
-        self.jobs = None
-
+    '''
     def get_online_solves(self) -> bool:
         if self.points is None:
             raise ValueError("Points not initialized")
         if self.jobs is None:
             raise ValueError("Jobs not initialized")
 
-        self.setup_online_solves()
+        self._setup_online_solves()
 
         results = _neos.get_solves(
             client=self.neos,
@@ -305,18 +377,20 @@ class TspStudio:
         if all([_ is not None for _ in results]):
             self.points = results
             self.is_routed = True
-            self.jobs = None
+            self.jobs = [None] * self.num_channels
             return True
 
         return False
+    '''
 
+    '''
     def get_online_solves_blocking(self, delay_minutes=0.25, logging=True):
         if self.points is None:
             raise ValueError("Points not initialized")
         if self.jobs is None:
             raise ValueError("Jobs not initialized")
 
-        self.setup_online_solves()
+        self._setup_online_solves()
 
         results = _neos.get_solves_blocking(
             client=self.neos,
@@ -328,7 +402,8 @@ class TspStudio:
 
         self.points = results
         self.is_routed = True
-        self.jobs = None
+        self.jobs = [None] * self.num_channels
+    '''
 
     def offline_solves(self, time_limit_minutes=60, symmetric=True, logging=True, verbose=False):
         if self.points is None:

@@ -18,6 +18,10 @@ class NeosSolveError(RuntimeError):
     pass
 
 
+class NeosNoDataError(RuntimeError):
+    pass
+
+
 def get_client(url="https://neos-server.org:3333"):
     client = xmlrpc.client.ServerProxy(url)
 
@@ -80,7 +84,11 @@ def cancel_solve(client, job_number, password):
 
 
 def cancel_solves(client, job_list):
-    for job_number, password in job_list:
+    for job in job_list:
+        if job is None:
+            continue
+
+        job_number, password = job
         cancel_solve(
             client=client,
             job_number=job_number,
@@ -111,7 +119,7 @@ def get_solve(client, job_number, password, points=None):
         raw_tour.append(line)
 
     if len(raw_tour) == 0:
-        raise NeosSolveError(f"Neos job did not return any data, got response:\n\n{neos_results}")
+        raise NeosNoDataError(f"Neos job did not return any data, got response:\n\n{neos_results}")
 
     raw_tour = raw_tour[::-1][1:]
 
