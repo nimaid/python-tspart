@@ -1,6 +1,6 @@
 """TSP Art Module for Python"""
 
-__version__ = "0.6.11"
+__version__ = "0.6.12"
 
 
 import tspart.voronoi
@@ -15,6 +15,6 @@ from tspart._helpers import (
     factors_from_image_multi, filter_white_points, filter_white_points_multi
 )
 from tspart._files import (
-    make_tspart, save_tspart, load_tspart, save_array_as_image, load_image_as_array, make_tsplib, decode_tsplib,
-    save_tsplib, load_tsplib, save_cyc_tour, load_cyc_tour, save_jobs, load_jobs
+    save_array_as_image, load_image_as_array, make_tsplib, decode_tsplib, save_tsplib, load_tsplib, save_cyc_tour,
+    load_cyc_tour
 )

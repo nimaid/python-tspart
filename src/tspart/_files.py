@@ -21,37 +21,6 @@ def load_json(filename):
     return obj
 
 
-def make_tspart(points, size, factors=None):
-    points = ndarray_to_array_2d(points)
-    if factors is not None:
-        factors = [list(_) for _ in factors]
-
-    return {"points": points, "factors": factors, "size": size}
-
-
-def save_tspart(filename, points, size, factors=None, indent=2):
-    obj = make_tspart(
-        points=points,
-        size=size,
-        factors=factors
-    )
-
-    save_json(filename=filename, obj=obj, indent=indent)
-
-
-def load_tspart(filename):
-    obj = load_json(filename)
-
-    points = array_to_ndarray_2d(obj["points"])
-    size = obj["size"]
-    if obj["factors"] is not None:
-        factors = [np.array(_) for _ in obj["factors"]]
-    else:
-        factors = None
-
-    return {"points": points, "factors": factors, "size": size}
-
-
 def load_image_as_array(filename, mode="RGB"):
     img = Image.open(filename)
     return image_to_array(img, mode)
@@ -120,11 +89,3 @@ def load_cyc_tour(filename):
         tour = [int(_.strip()) for _ in f.readlines() if _.strip() != ""]
 
     return tour
-
-
-def save_jobs(filename, jobs):
-    save_json(filename, {"jobs": jobs})
-
-
-def load_jobs(filename):
-    return load_json(filename)["jobs"]
