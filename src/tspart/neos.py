@@ -1,5 +1,3 @@
-import sys
-import time
 import xmlrpc.client
 
 from tspart._files import make_tsplib as _make_tsplib
@@ -152,56 +150,3 @@ def get_solves(client, job_list, points_list=None):
         result.append(r)
 
     return result
-
-
-def get_solve_blocking(client, job_number, password, points=None, delay_minutes=0.25, logging=True):
-    result = None
-
-    while result is None:
-        result = get_solve(
-            client=client,
-            job_number=job_number,
-            password=password,
-            points=points
-        )
-        if logging:
-            print("Still waiting for solve...", file=sys.stderr)
-
-        time.sleep(delay_minutes * 60)
-
-    return result
-
-
-def get_solves_blocking(client, job_list, points_list=None, delay_minutes=0.25, logging=True):
-    n = len(job_list)
-
-    result = [None] * n
-    results_not_done = [True] * n
-
-    while any(results_not_done):
-        for idx, (job_number, password) in enumerate(job_list):
-            points = None
-            if points_list is not None:
-                points = points_list[idx]
-
-            if result[idx] is None:
-                result[idx] = get_solve(
-                    client=client,
-                    job_number=job_number,
-                    password=password,
-                    points=points
-                )
-
-        results_not_done = [_ is None for _ in result]
-        num_solves = sum([not _ for _ in results_not_done])
-        if logging:
-            if num_solves < n:
-                print(f"{num_solves}/{n} solves so far...", file=sys.stderr)
-            else:
-                print(f"{num_solves}/{n} solves done!", file=sys.stderr)
-
-        if any(results_not_done):
-            time.sleep(delay_minutes * 60)
-
-    return result
-

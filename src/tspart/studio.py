@@ -1,5 +1,7 @@
 import os
 import shutil
+import sys
+import time
 from enum import Enum
 from typing import Sequence, Tuple
 
@@ -209,6 +211,14 @@ class TspStudio:
             "image": self.image_string
         }
 
+    def save(self, filename, logging=True):
+        save(
+            filename=filename,
+            studio=self
+        )
+        if logging:
+            print(f"Saved to {filename}", file=sys.stderr)
+
     def stipple(self, iterations=50, logging=True):
         self.points = _voronoi.stipple_image_multi(
             grayscale_arrays=self.channels,
@@ -245,19 +255,6 @@ class TspStudio:
         if self.neos is None:
             self.neos = _neos.get_client()
 
-    def submit_online_solves(self, email):
-        if self.points is None:
-            raise ValueError("Points not initialized")
-
-        self.setup_online_solves()
-        self.cancel_online_solves()
-
-        self.jobs = _neos.submit_solves(
-            client=self.neos,
-            email=email,
-            points_list=self.points
-        )
-
     def cancel_online_solves(self):
         self.setup_online_solves()
 
@@ -269,50 +266,85 @@ class TspStudio:
 
         self.jobs = None
 
-    def get_online_solves(self) -> bool:
-        if self.points is None:
-            raise ValueError("Points not initialized")
-        if self.jobs is None:
-            raise ValueError("Jobs not initialized")
-
+    def submit_online_solve(self, points, email):
         self.setup_online_solves()
 
-        results = _neos.get_solves(
+        return _neos.submit_solve(
             client=self.neos,
-            job_list=self.jobs,
-            points_list=self.points
+            email=email,
+            points=points
         )
 
-        if all([_ is not None for _ in results]):
-            self.points = results
-            self.compute_factors()
-
-            self.is_routed = True
-            self.jobs = None
-            return True
-
-        return False
-
-    def get_online_solves_blocking(self, delay_minutes=0.25, logging=True):
-        if self.points is None:
-            raise ValueError("Points not initialized")
-        if self.jobs is None:
-            raise ValueError("Jobs not initialized")
-
+    def get_online_solve(self, points, job_number, password) -> bool:
         self.setup_online_solves()
 
-        results = _neos.get_solves_blocking(
+        return _neos.get_solve(
             client=self.neos,
-            job_list=self.jobs,
-            points_list=self.points,
-            delay_minutes=delay_minutes,
-            logging=logging
+            job_number=job_number,
+            password=password,
+            points=points
         )
 
-        self.points = results
+    def online_solves(self, email, delay_minutes=0.25, logging=True, save_location=None):
+        if self.points is None:
+            raise ValueError("Points not initialized")
+
+        num_solves = len(self.points)
+
+        # Initialize first attempt jobs
+        jobs = []
+        for points in self.points:
+            jobs.append(self.submit_online_solve(
+                points=points,
+                email=email
+            ))
+
+        self.jobs = jobs
+        if save_location is not None:
+            self.save(save_location, logging=logging)
+
+        solves = [None] * num_solves
+        solves_not_done = [_ is None for _ in solves]
+        while any(solves_not_done):
+            for idx in range(num_solves):
+                try:
+                    job_number, password = self.jobs[idx]
+                    solves[idx] = self.get_online_solve(
+                        points=self.points[idx],
+                        job_number=job_number,
+                        password=password
+                    )
+                except _neos.NeosSolveError as e:
+                    print(f"Solve {idx} failed, retrying...\n\nFull error:\n{e}", file=sys.stderr)
+                    jobs[idx] = self.submit_online_solve(
+                        points=self.points[idx],
+                        email=email
+                    )
+
+            if jobs != self.jobs:
+                self.jobs = jobs
+                if save_location is not None:
+                    self.save(save_location, logging=logging)
+
+            solves_not_done = [_ is None for _ in solves]
+
+            num_results = sum([not _ for _ in solves_not_done])
+            if logging:
+                if num_results < num_solves:
+                    print(f"{num_results}/{num_solves} solves so far...", file=sys.stderr)
+                else:
+                    print(f"{num_results}/{num_solves} solves done!", file=sys.stderr)
+
+            if any(solves_not_done):
+                time.sleep(delay_minutes * 60)
+
+        self.points = solves
         self.compute_factors()
         self.is_routed = True
         self.jobs = None
+
+        if save_location is not None:
+            self.save(save_location, logging=logging)
 
     def offline_solves(self, time_limit_minutes=60, symmetric=True, logging=True, verbose=False):
         if self.points is None:
