@@ -93,11 +93,12 @@ def get_solve(client, job_number, password, points=None):
         return None
 
     completion_code = client.getCompletionCode(job_number, password)
-    if completion_code != "Normal":
-        raise NeosSolveError(f"Neos job completed with failed code: {completion_code}")
-
     neos_results = client.getFinalResults(job_number, password)
     neos_results = neos_results.data.decode()
+    if completion_code != "Normal":
+        raise NeosSolveError(f"Neos job completed with failed code: {completion_code}\n"
+                             f"Full response:\n"
+                             f"{neos_results}")
 
     results_arr = [_.strip() for _ in neos_results.split("\n") if _.strip() != ""]
 
