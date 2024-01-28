@@ -59,6 +59,9 @@ class TspStudio:
             is_routed: bool = False,
             jobs: Sequence[Sequence[int | str]] | None = None
     ):
+        self.neos = None
+        self.factors = None
+
         self.mode = mode
         self.invert = invert
         self.image = image
@@ -71,13 +74,6 @@ class TspStudio:
         self.points = points
         self.is_routed = is_routed
         self.jobs = jobs
-
-        self.neos = None
-
-        if self.points != None:
-            self.compute_factors()
-        else:
-            self.factors = None
 
     @property
     def mode(self) -> ColorMode:
@@ -122,8 +118,6 @@ class TspStudio:
         self._num_points = max(1, value)
 
         self.points = None
-        self.is_routed = False
-        self.factors = None
 
     @property
     def line_width(self) -> float:
@@ -180,8 +174,12 @@ class TspStudio:
     @points.setter
     def points(self, value: Sequence[Sequence[float | Sequence[float]]] | None):
         self._points = value
+        if self._points is None:
+            self.factors = None
+        else:
+            self.compute_factors()
+
         self.is_routed = False
-        self.factors = None
 
     @property
     def is_routed(self) -> bool:
@@ -289,6 +287,27 @@ class TspStudio:
             points=points
         )
 
+    def get_online_solves(self):
+        if self.points is None:
+            raise ValueError("Points not initialized")
+        if self.jobs is None:
+            raise ValueError("Jobs not initialized")
+
+        results = []
+        for points, (job_number, password) in zip(self.points):
+            results.append(self.get_online_solve(
+                points=points,
+                job_number=job_number,
+                password=password
+            ))
+
+        if all([_ is not None for _ in results]):
+            self.points = results
+            self.is_routed = True
+            return
+
+        raise InadequateResultsError("Some solves were still processing")
+
     def online_solves(self, email, delay_minutes=0.25, logging=True, save_location=None):
         if self.points is None:
             raise ValueError("Points not initialized")
@@ -346,7 +365,6 @@ class TspStudio:
                 time.sleep(delay_minutes * 60)
 
         self.points = solves
-        self.compute_factors()
         self.is_routed = True
         self.jobs = None
 
@@ -369,7 +387,6 @@ class TspStudio:
 
         if all([_ is not None for _ in results]):
             self.points = results
-            self.compute_factors()
             self.is_routed = True
             return True
 
