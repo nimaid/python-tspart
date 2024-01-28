@@ -38,6 +38,10 @@ class InadequateResultsWarning(RuntimeWarning):
     pass
 
 
+class InadequateResultsError(RuntimeError):
+    pass
+
+
 class TspStudio:
     def __init__(
             self,
@@ -124,7 +128,7 @@ class TspStudio:
 
     @white_threshold.setter
     def white_threshold(self, value: int):
-        self._white_threshold = max(1, value)
+        self._white_threshold = min(255, max(0, value))
 
     @property
     def invert(self):
@@ -218,9 +222,9 @@ class TspStudio:
         for idx, p in enumerate(self.points):
             length = len(p)
             if length == 0:
-                raise InadequateResultsWarning(f"Channel {idx}: "
-                                               f"Stippling produced no points, try raising the white threshold")
-            elif length < 100:
+                raise InadequateResultsError(f"Channel {idx}: "
+                                             f"Stippling produced no points, try raising the white threshold")
+            if length < 100:
                 raise InadequateResultsWarning(f"Channel {idx}: "
                                                f"Stippling produced very few ({length}) points, solves may fail")
 
@@ -379,26 +383,29 @@ def load(filename) -> TspStudio:
         obj["points"] = _array_to_ndarray_2d(obj["points"])
 
     return TspStudio(
-            mode=obj["mode"],
-            image=obj["image"],
-            num_points=obj["num_points"],
-            line_width=obj["line_width"],
-            white_threshold=obj["white_threshold"],
-            invert=obj["invert"],
-            background=obj["background"],
-            foreground=obj["foreground"],
-            points=obj["points"],
-            is_routed=obj["is_routed"],
-            jobs=obj["jobs"]
+        mode=obj["mode"],
+        image=obj["image"],
+        num_points=obj["num_points"],
+        line_width=obj["line_width"],
+        white_threshold=obj["white_threshold"],
+        invert=obj["invert"],
+        background=obj["background"],
+        foreground=obj["foreground"],
+        points=obj["points"],
+        is_routed=obj["is_routed"],
+        jobs=obj["jobs"]
     )
 
 
-def save(filename, studio, indent=2):
+def save(filename, studio, indent=2, round_places=2):
     obj = studio.data
 
     obj["image"] = _image_to_base64(obj["image"])
     obj["mode"] = obj["mode"].value
     if obj["points"] is not None:
-        obj["points"] = _ndarray_to_array_2d(obj["points"])
+        obj["points"] = _ndarray_to_array_2d(
+            array=obj["points"],
+            round_places=round_places
+        )
 
     _save_json(filename, obj, indent=indent)

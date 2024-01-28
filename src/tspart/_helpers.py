@@ -56,11 +56,17 @@ def map_points_to_tour_multi(
     return result
 
 
-def ndarray_to_array_2d(array):
+def ndarray_to_array_2d(array, round_places=None):
+    if round_places is not None:
+        return [list([list(__.round(round_places)) for __ in _]) for _ in array]
+
     return [list([list(__) for __ in _]) for _ in array]
 
 
-def array_to_ndarray_2d(array):
+def array_to_ndarray_2d(array, round_places=None):
+    if round_places is not None:
+        return [np.array(_).round(round_places) for _ in array]
+
     return [np.array(_) for _ in array]
 
 
