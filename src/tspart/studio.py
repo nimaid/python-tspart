@@ -397,7 +397,7 @@ def load(filename) -> TspStudio:
     )
 
 
-def save(filename, studio, indent=2, round_places=2):
+def save(filename, studio, round_places=2):
     obj = studio.data
 
     obj["image"] = _image_to_base64(obj["image"])
@@ -408,4 +408,4 @@ def save(filename, studio, indent=2, round_places=2):
             round_places=round_places
         )
 
-    _save_json(filename, obj, indent=indent)
+    _save_json(filename, obj, indent=None)
