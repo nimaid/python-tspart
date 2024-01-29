@@ -331,9 +331,9 @@ class TspStudio:
                             points=self.points[idx],
                             email=email
                         )
-                    except:
+                    except _neos.NeosSubmitError as e:
                         self._jobs[idx] = False
-                        message(f"Failed to submit solve #{idx} failed, will retry later.")
+                        message(f"Failed to submit solve #{idx} failed, will retry later.\n{e}")
 
             save_file()
 
