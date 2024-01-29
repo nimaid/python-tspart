@@ -334,28 +334,30 @@ class TspStudio:
 
         tries = [0] * self.num_channels
         while any([_ is not True for _ in self._jobs]):
-            message(f"Submitting {sum([_ is None or _ is False for _ in self._jobs])} solves...")
+            num_jobs_to_submit = sum([_ is None or _ is False for _ in self._jobs])
 
             # Make requests for any failed or unattempted jobs
-            last_requeue_time = datetime.now()
-            jobs_submitted = 0
-            for idx, job in enumerate(self._jobs):
-                if job is None or job is False:
-                    message(f"Submitting solve #{idx}...")
-                    try:
-                        self._jobs[idx] = self._submit_online_solve(
-                            points=self.points[idx],
-                            email=email
-                        )
-                        jobs_submitted += 1
-                    except _neos.NeosSubmitError as e:
-                        self._jobs[idx] = False
-                        message(f"Failed to submit solve #{idx} failed, will retry later.\n{e}")
+            if num_jobs_to_submit > 0:
+                message(f"Submitting {num_jobs_to_submit} solves...")
+                last_requeue_time = datetime.now()
+                jobs_submitted = 0
+                for idx, job in enumerate(self._jobs):
+                    if job is None or job is False:
+                        message(f"Submitting solve #{idx}...")
+                        try:
+                            self._jobs[idx] = self._submit_online_solve(
+                                points=self.points[idx],
+                                email=email
+                            )
+                            jobs_submitted += 1
+                        except _neos.NeosSubmitError as e:
+                            self._jobs[idx] = False
+                            message(f"Failed to submit solve #{idx} failed, will retry later.\n{e}")
 
-            message(f"{jobs_submitted} solves submitted.")
-            save_file()
+                message(f"{jobs_submitted} solves submitted.")
+                save_file()
 
-            delay()
+                delay()
 
             # Try to get each job in a loop until they all fail or finish, or until we hit max retries
             jobs_not_ended = [not isinstance(_, bool) for _ in self._jobs]
