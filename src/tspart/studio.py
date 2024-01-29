@@ -297,7 +297,7 @@ class TspStudio:
             job_list=self.jobs
             )
 
-        self.jobs = [None] * self.num_channels
+        self.jobs = [_ if isinstance(_, bool) else None for _ in self._jobs]
 
     def online_solves(
             self,
