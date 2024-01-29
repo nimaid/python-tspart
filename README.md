@@ -112,7 +112,7 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
 - [Evil Mad Scientist's TSP Art Webpage](https://wiki.evilmadscientist.com/TSP_art)
 - [Original Stippling Code](https://github.com/ReScience-Archives/Rougier-2017) by [Nicolas Rougier](https://github.com/rougier)
 - [Google OR-Tools TSP Guide](https://developers.google.com/optimization/routing/tsp)
-- [Concorde TSP Solver](https://www.math.uwaterloo.ca/tsp/concorde/index.html)
+- [Concorde TSP Solver](https://www.math.uwaterloo.ca/tsp/concorde/index.html) by [William Cook](https://www.math.uwaterloo.ca/~bico/)
 - [Neos Concorde Solver](https://neos-server.org/neos/solvers/co:concorde/TSP.html) by [Hans Mittelmann](https://plato.asu.edu/)
 - [Neos Server API Reference](https://neos-server.org/neos/xml-rpc.html)
 - [Neos Server Job Queue](https://neos-server.org/neos/cgi-bin/nph-neos-solver.cgi?admin=queue)
