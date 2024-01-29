@@ -315,7 +315,7 @@ class TspStudio:
                         message(f"Failed to submit solve #{idx}.\n{e}")
             message(f"{jobs_submitted} solves submitted.")
         else:
-            message("All solves done, nothing to submit.")
+            message("Nothing to submit.")
 
         if all([_ is True for _ in self._jobs]):
             self.is_routed = True
@@ -352,7 +352,7 @@ class TspStudio:
                             jobs_gotten += 1
                             message(f"Got solve #{idx}!")
                         else:
-                            message(f"Solve #{idx} is still processing...")
+                            message(f"Solve #{idx} is still processing.")
                     except (_neos.NeosSolveError, _neos.NeosNoDataError) as e:
                         self._jobs[idx] = False
                         message(f"Solve #{idx} failed.")
