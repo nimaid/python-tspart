@@ -304,7 +304,7 @@ class TspStudio:
             email,
             delay_minutes=0.25,
             requeue_minutes=10,
-            max_tries=10,
+            max_tries=None,
             logging=True,
             save_filename=None
     ):
@@ -325,7 +325,9 @@ class TspStudio:
         def save_file():
             if save_filename is not None:
                 self.save(save_filename)
-                message(f"Saved to {save_filename}\n")
+                message(f"Saved to {save_filename}")
+            
+            message("\n")
 
         def delay():
             time.sleep(delay_minutes * 60)
@@ -379,12 +381,15 @@ class TspStudio:
                         except _neos.NeosSolveError as e:
                             self._jobs[idx] = False
                             tries[idx] += 1
-                            message(f"Solve #{idx} failed, will retry later. (Try {tries[idx]}/{max_tries})")
+                            if max_tries is not None:
+                                message(f"Solve #{idx} failed, will retry later. (Try {tries[idx]}/{max_tries})")
 
-                            if tries[idx] == max_tries:
-                                message(f"Reached max tries for solve #{idx}, stopping.")
-                                save_file()
-                                return False
+                                if tries[idx] == max_tries:
+                                    message(f"Reached max tries for solve #{idx}, stopping.")
+                                    save_file()
+                                    return False
+                            else:
+                                message(f"Solve #{idx} failed, will retry later.")
 
                 jobs_not_ended = [not isinstance(_, bool) for _ in self._jobs]
 
