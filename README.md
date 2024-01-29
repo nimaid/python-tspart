@@ -70,9 +70,9 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
 <p align="center">
     <b>Bliss</b>
     <br>
-    CMYK
-    <br>
     25000 Points
+    <br>
+    CMYK
     <br>
     <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/bliss_25000_CMYK.png" width="800px" alt="Bliss"/>
 </p>
@@ -80,9 +80,9 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
 <p align="center">
     <b>Bowser The Fearless</b>
     <br>
-    CMYK
-    <br>
     25000 Points
+    <br>
+    CMYK
     <br>
     <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/bowser_25000_CMYK.png" width="800px" alt="Bowser The Fearless"/>
 </p>
@@ -90,9 +90,9 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
 <p align="center">
     <b>Self Portrait</b>
     <br>
-    CMYK
-    <br>
     35000 Points
+    <br>
+    CMYK
     <br>
     <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/ella_35000_CMYK.png" width="800px" alt="Self Portrait"/>
 </p>
@@ -100,11 +100,16 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
 <p align="center">
     <b><a href="https://www.eso.org/public/images/eso1208a/">ESO1208A</a></b>
     <br>
-    CMYK
-    <br>
     100000 Points
     <br>
-    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/eso1208a_100000_CMYK.png" width="800px" alt="ESO1208A"/>
+    CMYK
+    <br>
+    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/eso1208a_100000_CMYK.png" width="800px" alt="ESO1208A (CMYK)"/>
+    <br>
+    RGB
+    <br>
+    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/eso1208a_100000_RGB.png" width="800px" alt="ESO1208A (RGB)"/>
+    
 </p>
 
 # References
