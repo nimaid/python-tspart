@@ -317,6 +317,9 @@ class TspStudio:
         else:
             message("All solves done, nothing to submit.")
 
+        if all([_ is True for _ in self._jobs]):
+            self.is_routed = True
+
         return jobs_submitted
 
     def get_online_solves(self, logging=True):
@@ -356,6 +359,9 @@ class TspStudio:
                         message(f"--------\n{e}\n^^^^^^^^")
         else:
             message("No solves currently in processing.")
+
+        if all([_ is True for _ in self._jobs]):
+            self.is_routed = True
 
         return jobs_gotten
 
