@@ -392,12 +392,17 @@ class TspStudio:
                     if (datetime.now() - last_requeue_time).total_seconds() >= requeue_minutes * 60:
                         requeue = True
 
+                num_jobs_not_ended = sum(jobs_not_ended)
+
+                if num_jobs_not_ended == 0:
+                    requeue = True
+
                 if requeue:
-                    message(f"Either got result(s) or requeue time expired...")
+                    message(f"Either got result(s), all jobs failed, or requeue time expired...")
                     save_file()
                     break  # Once we get a result, immediately try requests again
 
-                message(f"Still waiting for {sum(jobs_not_ended)} solves...")
+                message(f"Still waiting for {num_jobs_not_ended} solves...")
 
                 save_file()
 
