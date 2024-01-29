@@ -327,25 +327,33 @@ class TspStudio:
                 self.save(save_filename)
                 message(f"Saved to {save_filename}\n")
 
+        def delay():
+            time.sleep(delay_minutes * 60)
+
         tries = [0] * self.num_channels
         while any([_ is not True for _ in self._jobs]):
             message(f"Submitting {sum([_ is None or _ is False for _ in self._jobs])} solves...")
 
             # Make requests for any failed or unattempted jobs
             last_requeue_time = datetime.now()
+            jobs_submitted = 0
             for idx, job in enumerate(self._jobs):
                 if job is None or job is False:
-                    message(f"Submitting solve #{idx}.")
+                    message(f"Submitting solve #{idx}...")
                     try:
                         self._jobs[idx] = self._submit_online_solve(
                             points=self.points[idx],
                             email=email
                         )
+                        jobs_submitted += 1
                     except _neos.NeosSubmitError as e:
                         self._jobs[idx] = False
                         message(f"Failed to submit solve #{idx} failed, will retry later.\n{e}")
 
+            message(f"{jobs_submitted} solves submitted.")
             save_file()
+
+            delay()
 
             # Try to get each job in a loop until they all fail or finish, or until we hit max retries
             jobs_not_ended = [not isinstance(_, bool) for _ in self._jobs]
@@ -367,7 +375,7 @@ class TspStudio:
                                 requeue = True
                                 message(f"Got solve #{idx}!")
                             else:
-                                message(f"Still waiting for solve #{idx}...")
+                                message(f"Solve #{idx} is still processing...")
                         except _neos.NeosSolveError as e:
                             self._jobs[idx] = False
                             tries[idx] += 1
@@ -393,7 +401,7 @@ class TspStudio:
 
                 save_file()
 
-                time.sleep(delay_minutes * 60)
+                delay()
 
         message(f"All solves done!")
 
