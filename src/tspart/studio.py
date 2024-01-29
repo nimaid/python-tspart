@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import shutil
 import sys
@@ -298,7 +299,15 @@ class TspStudio:
 
         self.jobs = [None] * self.num_channels
 
-    def online_solves(self, email, delay_minutes=0.25, max_tries=10, logging=True, save_filename=None):
+    def online_solves(
+            self,
+            email,
+            delay_minutes=0.25,
+            max_tries=10,
+            requeue_minutes=10,
+            logging=True,
+            save_filename=None
+    ):
         if self.points is None:
             raise ValueError("Points not initialized")
 
@@ -323,6 +332,7 @@ class TspStudio:
             message(f"Submitting {sum([_ is None or _ is False for _ in self._jobs])} solves...")
 
             # Make requests for any failed or unattempted jobs
+            last_requeue_time = datetime.now()
             for idx, job in enumerate(self._jobs):
                 if job is None or job is False:
                     message(f"Submitting solve #{idx}.")
@@ -341,7 +351,7 @@ class TspStudio:
             jobs_not_ended = [not isinstance(_, bool) for _ in self._jobs]
             while any(jobs_not_ended):
                 message(f"Trying to get {sum(jobs_not_ended)} solves...")
-                got_result = False
+                requeue = False
                 for idx, job in enumerate(self._jobs):
                     if not isinstance(job, bool) and job is not None:
                         job_number, password = job
@@ -354,7 +364,7 @@ class TspStudio:
                             if result is not None:
                                 self._points[idx] = result
                                 self._jobs[idx] = True
-                                got_result = True
+                                requeue = True
                                 message(f"Got solve #{idx}!")
                             else:
                                 message(f"Still waiting for solve #{idx}...")
@@ -370,8 +380,12 @@ class TspStudio:
 
                 jobs_not_ended = [not isinstance(_, bool) for _ in self._jobs]
 
-                if got_result:
-                    message(f"Got result, retrying submit...")
+                if requeue_minutes is not None:
+                    if (datetime.now() - last_requeue_time).total_seconds() >= requeue_minutes * 60:
+                        requeue = True
+
+                if requeue:
+                    message(f"Either got result(s) or requeue time expired...")
                     save_file()
                     break  # Once we get a result, immediately try requests again
 
