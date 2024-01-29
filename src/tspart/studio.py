@@ -303,8 +303,8 @@ class TspStudio:
             self,
             email,
             delay_minutes=0.25,
-            max_tries=10,
             requeue_minutes=10,
+            max_tries=10,
             logging=True,
             save_filename=None
     ):
