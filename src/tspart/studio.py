@@ -363,6 +363,9 @@ class TspStudio:
         if all([_ is True for _ in self._jobs]):
             self.is_routed = True
 
+        if jobs_gotten > 0:
+            self._compute_factors()
+
         return jobs_gotten
 
     def cancel_online_solves(self):
