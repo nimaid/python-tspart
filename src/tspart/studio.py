@@ -337,10 +337,10 @@ class TspStudio:
             num_jobs_to_submit = sum([_ is None or _ is False for _ in self._jobs])
 
             # Make requests for any failed or unattempted jobs
+            last_requeue_time = datetime.now()
+            jobs_submitted = 0
             if num_jobs_to_submit > 0:
                 message(f"Submitting {num_jobs_to_submit} solves...")
-                last_requeue_time = datetime.now()
-                jobs_submitted = 0
                 for idx, job in enumerate(self._jobs):
                     if job is None or job is False:
                         message(f"Submitting solve #{idx}...")
