@@ -289,6 +289,76 @@ class TspStudio:
             points=points
         )
 
+    def submit_online_solves(self, email, logging=True):
+        self._setup_online_solves()
+
+        def message(text):
+            if logging:
+                print(text, file=sys.stderr)
+
+        jobs_submitted = 0
+
+        num_jobs_to_submit = sum([_ is None or _ is False for _ in self._jobs])
+        if num_jobs_to_submit > 0:
+            message(f"Submitting {num_jobs_to_submit} solves...")
+            for idx, job in enumerate(self._jobs):
+                if job is None or job is False:
+                    try:
+                        self._jobs[idx] = self._submit_online_solve(
+                            points=self.points[idx],
+                            email=email
+                        )
+                        jobs_submitted += 1
+                        message(f"Submitted solve #{idx}.")
+                    except _neos.NeosSubmitError as e:
+                        self._jobs[idx] = False
+                        message(f"Failed to submit solve #{idx}.\n{e}")
+            message(f"{jobs_submitted} solves submitted.")
+        else:
+            message("All solves done, nothing to submit.")
+
+        return jobs_submitted
+
+    def get_online_solves(self, logging=True):
+        if self.points is None:
+            raise ValueError("Points not initialized")
+
+        self._setup_online_solves()
+
+        def message(text):
+            if logging:
+                print(text, file=sys.stderr)
+
+        jobs_gotten = 0
+        jobs_in_processing = [isinstance(_, Sequence) for _ in self._jobs]
+        num_jobs_in_processing = sum(jobs_in_processing)
+        if num_jobs_in_processing > 0:
+            message(f"Trying to get {num_jobs_in_processing} solves...")
+            for idx, job in enumerate(self._jobs):
+                if jobs_in_processing[idx]:
+                    job_number, password = job
+                    try:
+                        result = self._get_online_solve(
+                            points=self.points[idx],
+                            job_number=job_number,
+                            password=password
+                        )
+                        if result is not None:
+                            self._points[idx] = result
+                            self._jobs[idx] = True
+                            jobs_gotten += 1
+                            message(f"Got solve #{idx}!")
+                        else:
+                            message(f"Solve #{idx} is still processing...")
+                    except (_neos.NeosSolveError, _neos.NeosNoDataError) as e:
+                        self._jobs[idx] = False
+                        message(f"Solve #{idx} failed.")
+                        message(f"--------\n{e}\n^^^^^^^^")
+        else:
+            message("No solves currently in processing.")
+
+        return jobs_gotten
+
     def cancel_online_solves(self):
         self._setup_online_solves()
 
@@ -304,7 +374,6 @@ class TspStudio:
             email,
             delay_minutes=0.25,
             requeue_minutes=10,
-            max_tries=None,
             logging=True,
             save_filename=None
     ):
@@ -332,29 +401,15 @@ class TspStudio:
         def delay():
             time.sleep(delay_minutes * 60)
 
-        tries = [0] * self.num_channels
         while any([_ is not True for _ in self._jobs]):
-            num_jobs_to_submit = sum([_ is None or _ is False for _ in self._jobs])
-
             # Make requests for any failed or unattempted jobs
             last_requeue_time = datetime.now()
-            jobs_submitted = 0
+            num_jobs_to_submit = sum([_ is None or _ is False for _ in self._jobs])
             if num_jobs_to_submit > 0:
-                message(f"Submitting {num_jobs_to_submit} solves...")
-                for idx, job in enumerate(self._jobs):
-                    if job is None or job is False:
-                        message(f"Submitting solve #{idx}...")
-                        try:
-                            self._jobs[idx] = self._submit_online_solve(
-                                points=self.points[idx],
-                                email=email
-                            )
-                            jobs_submitted += 1
-                        except _neos.NeosSubmitError as e:
-                            self._jobs[idx] = False
-                            message(f"Failed to submit solve #{idx} failed, will retry later.\n{e}")
-
-                message(f"{jobs_submitted} solves submitted.")
+                jobs_submitted = self.submit_online_solves(
+                    email=email,
+                    logging=logging
+                )
                 save_file()
 
                 delay()
@@ -362,52 +417,25 @@ class TspStudio:
             # Try to get each job in a loop until they all fail or finish, or until we hit max retries
             jobs_not_ended = [not isinstance(_, bool) for _ in self._jobs]
             while any(jobs_not_ended):
-                message(f"Trying to get {sum(jobs_not_ended)} solves...")
-                requeue = False
-                for idx, job in enumerate(self._jobs):
-                    if not isinstance(job, bool) and job is not None:
-                        job_number, password = job
-                        try:
-                            result = self._get_online_solve(
-                                points=self.points[idx],
-                                job_number=job_number,
-                                password=password
-                            )
-                            if result is not None:
-                                self._points[idx] = result
-                                self._jobs[idx] = True
-                                requeue = True
-                                message(f"Got solve #{idx}!")
-                            else:
-                                message(f"Solve #{idx} is still processing...")
-                        except (_neos.NeosSolveError, _neos.NeosNoDataError) as e:
-                            self._jobs[idx] = False
-                            tries[idx] += 1
-                            if max_tries is not None:
-                                message(f"Solve #{idx} failed, will retry later. (Try {tries[idx]}/{max_tries})")
-                                message(f"--------\n{e}\n^^^^^^^^")
-
-                                if tries[idx] == max_tries:
-                                    message(f"Reached max tries for solve #{idx}, stopping.")
-                                    save_file()
-                                    return False
-                            else:
-                                message(f"Solve #{idx} failed, will retry later.")
-                                message(f"--------\n{e}\n^^^^^^^^")
+                jobs_gotten = self.get_online_solves(
+                    logging=logging
+                )
 
                 jobs_not_ended = [not isinstance(_, bool) for _ in self._jobs]
                 num_jobs_not_ended = sum(jobs_not_ended)
 
-                requeue_message = "Got result(s)"
+                requeue_message = ""
+                requeue = False
                 if requeue_minutes is not None:
                     if (datetime.now() - last_requeue_time).total_seconds() >= requeue_minutes * 60:
                         requeue_message = "Requeue time expired"
                         requeue = True
-
                 if num_jobs_not_ended == 0:
                     requeue_message = "All jobs failed"
                     requeue = True
-
+                if jobs_gotten > 0:
+                    requeue_message = "Got result(s)"
+                    requeue = True
                 if requeue:
                     message(f"{requeue_message}, attempting requeue of needed results (if any)...")
                     save_file()
@@ -423,67 +451,6 @@ class TspStudio:
         self.is_routed = True
         save_file()
         return True
-
-    '''
-    def submit_online_solves(self, email):
-        if self.points is None:
-            raise ValueError("Points not initialized")
-
-        self._setup_online_solves()
-        self.cancel_online_solves()
-
-        self.jobs = _neos.submit_solves(
-            client=self.neos,
-            email=email,
-            points_list=self.points
-        )
-    '''
-
-    '''
-    def get_online_solves(self) -> bool:
-        if self.points is None:
-            raise ValueError("Points not initialized")
-        if self.jobs is None:
-            raise ValueError("Jobs not initialized")
-
-        self._setup_online_solves()
-
-        results = _neos.get_solves(
-            client=self.neos,
-            job_list=self.jobs,
-            points_list=self.points
-        )
-
-        if all([_ is not None for _ in results]):
-            self.points = results
-            self.is_routed = True
-            self.jobs = [None] * self.num_channels
-            return True
-
-        return False
-    '''
-
-    '''
-    def get_online_solves_blocking(self, delay_minutes=0.25, logging=True):
-        if self.points is None:
-            raise ValueError("Points not initialized")
-        if self.jobs is None:
-            raise ValueError("Jobs not initialized")
-
-        self._setup_online_solves()
-
-        results = _neos.get_solves_blocking(
-            client=self.neos,
-            job_list=self.jobs,
-            points_list=self.points,
-            delay_minutes=delay_minutes,
-            logging=logging
-        )
-
-        self.points = results
-        self.is_routed = True
-        self.jobs = [None] * self.num_channels
-    '''
 
     def offline_solves(self, time_limit_minutes=60, symmetric=True, logging=True, verbose=False):
         # TODO: Logging, partial solution saving, checkpointing
