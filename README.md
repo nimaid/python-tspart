@@ -98,13 +98,13 @@ To test it out in your browser, head over to [Google Colab](https://colab.resear
 </p>
 
 <p align="center">
-    <b><a href="https://www.eso.org/public/images/eso1208a/">ESO 1208A</a></b>
+    <b><a href="https://www.eso.org/public/images/eso1208a/">ESO1208A</a></b>
     <br>
     CMYK
     <br>
     100000 Points
     <br>
-    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/eso1208a_100000_CMYK.png" width="800px" alt="ESO 1208A"/>
+    <img src="https://raw.githubusercontent.com/nimaid/python-tspart/main/tests/eso1208a_100000_CMYK.png" width="800px" alt="ESO1208A"/>
 </p>
 
 # References
