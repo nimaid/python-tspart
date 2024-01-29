@@ -31,6 +31,11 @@ def get_client(url="https://neos-server.org:3333"):
     return client
 
 
+def print_queue(client, file=sys.stdout):
+    message = client.printQueue()
+    print(message, file=file)
+
+
 def make_solver_job(email, points):
     result = "<document>\n"
 
