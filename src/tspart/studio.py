@@ -380,7 +380,7 @@ class TspStudio:
                                 message(f"Got solve #{idx}!")
                             else:
                                 message(f"Solve #{idx} is still processing...")
-                        except _neos.NeosSolveError as e:
+                        except (_neos.NeosSolveError, _neos.NeosNoDataError) as e:
                             self._jobs[idx] = False
                             tries[idx] += 1
                             if max_tries is not None:
