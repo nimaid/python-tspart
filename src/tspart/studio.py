@@ -325,9 +325,9 @@ class TspStudio:
         def save_file():
             if save_filename is not None:
                 self.save(save_filename)
-                message(f"Saved to {save_filename}")
-            
-            message("\n")
+                message(f"Saved to {save_filename}\n")
+            else:
+                message("\n")
 
         def delay():
             time.sleep(delay_minutes * 60)
@@ -383,6 +383,7 @@ class TspStudio:
                             tries[idx] += 1
                             if max_tries is not None:
                                 message(f"Solve #{idx} failed, will retry later. (Try {tries[idx]}/{max_tries})")
+                                message(f"--------\n{e}\n^^^^^^^^")
 
                                 if tries[idx] == max_tries:
                                     message(f"Reached max tries for solve #{idx}, stopping.")
@@ -390,6 +391,7 @@ class TspStudio:
                                     return False
                             else:
                                 message(f"Solve #{idx} failed, will retry later.")
+                                message(f"--------\n{e}\n^^^^^^^^")
 
                 jobs_not_ended = [not isinstance(_, bool) for _ in self._jobs]
 
