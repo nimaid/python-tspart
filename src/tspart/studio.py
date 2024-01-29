@@ -396,23 +396,24 @@ class TspStudio:
                                 message(f"--------\n{e}\n^^^^^^^^")
 
                 jobs_not_ended = [not isinstance(_, bool) for _ in self._jobs]
-
-                if requeue_minutes is not None:
-                    if (datetime.now() - last_requeue_time).total_seconds() >= requeue_minutes * 60:
-                        requeue = True
-
                 num_jobs_not_ended = sum(jobs_not_ended)
 
+                requeue_message = "Got result(s)"
+                if requeue_minutes is not None:
+                    if (datetime.now() - last_requeue_time).total_seconds() >= requeue_minutes * 60:
+                        requeue_message = "Requeue time expired"
+                        requeue = True
+
                 if num_jobs_not_ended == 0:
+                    requeue_message = "All jobs failed"
                     requeue = True
 
                 if requeue:
-                    message(f"Either got result(s), all jobs failed, or requeue time expired...")
+                    message(f"{requeue_message}, attempting requeue of needed results (if any)...")
                     save_file()
                     break  # Once we get a result, immediately try requests again
 
                 message(f"Still waiting for {num_jobs_not_ended} solves...")
-
                 save_file()
 
                 delay()
