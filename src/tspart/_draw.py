@@ -33,7 +33,7 @@ def draw_route(
         factors,
         size,
         line_width=2,
-        minimum_line_width_factor=0.05,
+        minimum_line_width_factor=(1/255),
         scale=1,
         closed=True,
         background=(255, 255, 255),
@@ -105,7 +105,7 @@ def draw_cmyk_routes(
         cmyk_factors,
         size=None,
         line_width=2,
-        minimum_line_width_factor=0.05,
+        minimum_line_width_factor=(1/255),
         scale=1,
         closed=True,
         subpixels=8
@@ -146,7 +146,7 @@ def draw_rgb_routes(
         rgb_factors,
         size=None,
         line_width=2,
-        minimum_line_width_factor=0.05,
+        minimum_line_width_factor=(1/255),
         scale=1,
         closed=True,
         subpixels=8

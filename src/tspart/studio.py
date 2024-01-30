@@ -485,7 +485,7 @@ class TspStudio:
 
         return False
 
-    def draw(self, scale=1, closed=True, subpixels=8):
+    def draw(self, scale=1, minimum_line_width_factor=(1/255), closed=True, subpixels=8):
         if self.points is None:
             raise ValueError("Points not initialized")
         if self.factors is None:
@@ -500,6 +500,7 @@ class TspStudio:
                     cmyk_factors=self.factors,
                     size=self.size,
                     line_width=self.line_width,
+                    minimum_line_width_factor=minimum_line_width_factor,
                     scale=scale,
                     closed=closed,
                     subpixels=subpixels
@@ -510,6 +511,7 @@ class TspStudio:
                     rgb_factors=self.factors,
                     size=self.size,
                     line_width=self.line_width,
+                    minimum_line_width_factor=minimum_line_width_factor,
                     scale=scale,
                     closed=closed,
                     subpixels=subpixels
@@ -520,6 +522,7 @@ class TspStudio:
                     factors=self.factors[0],
                     size=self.size,
                     line_width=self.line_width,
+                    minimum_line_width_factor=minimum_line_width_factor,
                     scale=scale,
                     closed=closed,
                     background=self.background,

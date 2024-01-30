@@ -168,3 +168,18 @@ def filter_white_points_multi(grayscale_arrays, points_list, threshold=1, blur_s
         results.append(points)
 
     return results
+
+
+try:
+    from itertools import batched
+except ImportError:
+    from itertools import islice
+
+    # https: // docs.python.org / 3 / library / itertools.html  # itertools.batched
+    def batched(iterable, n):
+        # batched('ABCDEFG', 3) --> ABC DEF G
+        if n < 1:
+            raise ValueError('n must be at least one')
+        it = iter(iterable)
+        while batch := tuple(islice(it, n)):
+            yield batch

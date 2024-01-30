@@ -1,8 +1,9 @@
+import io
 import json
 import numpy as np
 from PIL import Image
 
-from tspart._helpers import ndarray_to_array_2d, array_to_ndarray_2d, image_to_array, array_to_image
+from tspart._helpers import ndarray_to_array_2d, array_to_ndarray_2d, image_to_array, array_to_image, batched
 
 
 class TsplibSyntaxError(SyntaxError):
@@ -31,20 +32,20 @@ def save_array_as_image(filename, array, mode="RGB"):
 
 
 def make_tsplib(points, name="tspart"):
-    result = f"NAME: {name}\r\n"
-    result += "TYPE: TSP\r\n"
-    result += f"DIMENSION: {len(points)}\r\n"
-    result += "EDGE_WEIGHT_TYPE: EUC_2D\r\n"
-    result += "NODE_COORD_SECTION\r\n"
+    result = f"NAME: {name}\n"
+    result += "TYPE: TSP\n"
+    result += f"DIMENSION: {len(points)}\n"
+    result += f"EDGE_WEIGHT_TYPE: EUC_2D\n"
+    result += f"NODE_COORD_SECTION\n"
 
     for idx, (x, y) in enumerate(points):
-        result +=f"{idx + 1} {x:.6f} {y:.6f}\r\n"
+        result +=f"{idx + 1} {x:.6f} {y:.6f}\n"
 
     return result
 
 
 def save_tsplib(filename, points):
-    with open(filename, "w") as f:
+    with io.open(filename, "w", newline="\r\n") as f:
         f.write(make_tsplib(points))
 
 
@@ -89,3 +90,20 @@ def load_cyc_tour(filename):
         tour = [int(_.strip()) for _ in f.readlines() if _.strip() != ""]
 
     return tour
+
+
+'''
+def save_sol_tour(filename, tour):
+    with open(filename, "w") as f:
+        f.write(f"{len(tour)}")
+        for idx in tour:
+            f.write(f"{idx}\n")
+
+
+def load_sol_tour(filename):
+    with open(filename, "r") as f:
+        lines = [int(_.strip()) for _ in f.readlines() if _.strip() != ""]
+        tour =
+
+    return tour
+'''
